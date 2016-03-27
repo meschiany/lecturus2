@@ -20,7 +20,7 @@ test:
 
 production:
   adapter: postgresql
-  host: ec2-54-163-238-96.compute-1.amazonaws.com
-  username: voumxxjpbspkpl
-  database: d34eg22ecn4mlk
-  password: 92VpB95O0NDMCmivJYnF4REsCf
+  host: ec2-54-235-246-67.compute-1.amazonaws.com
+  username: wsanyrtlwbuxcl
+  database: d6b7412i99s1hm
+  password: gNCr53SeqR_0BPORHHpAc9r_RG
