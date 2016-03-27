@@ -19,8 +19,8 @@ test:
   timeout: 5000
 
 production:
-  adapter: postgresql
-  host: ec2-54-235-246-67.compute-1.amazonaws.com
-  username: wsanyrtlwbuxcl
-  database: d6b7412i99s1hm
-  password: gNCr53SeqR_0BPORHHpAc9r_RG
+  adapter:  postgresql
+  encoding: utf8
+  database: prod-db
+  pool: 5
+  timeout: 5000
