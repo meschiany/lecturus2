@@ -1,15 +1,17 @@
 class VideoController < MainController
+
 	def show
 		vid = Video.find_by_id(params[:id])
 		if vid
-			render :json => {"vidId" => vid.id, "title" => vid.title}, :status => :ok
+      json = getJson("success", vid, "show")
+			render :json => json, :status => :ok
 		else
 			render :json => {"msg"=>"not found"}, :status => :not_found
 		end
 	end
 
-	def save_img
-		data_url = params[:imgBase64]
+	def upload
+		data_url = params[:data]
 		puts data_url
 		name = params[:name]
 		png = Base64.decode64(data_url['data:image/png;base64,'.length .. -1])
@@ -18,45 +20,57 @@ class VideoController < MainController
 	end
 
 	def new
-		json = validateParams(params, "title")
+		json = validateParams(params,["title", "master_id", "course_id"])
 		if !json.nil?
 			render :json => json, :status => :not_found
 		else
+      
+			vid = Video.new(title: "#{params[:title]}", master_id: "#{params[:master_id]}",
+				start_record_timestamp: Time.now.getutc,
+				course_id: "#{params[:course_id]}",
+				status: "#$STATUS_REC")
+			vid.save
+			data = {"video_id" => vid.id, 
+				"title" => vid.title, 
+				"master_id" => "#{params[:master_id]}", 
+				"start_record_timestamp" => Time.now.getutc,
+				"course_id" => "#{params[:course_id]}",
+				"status" => "#$STATUS_REC"
+			}
+			json = getJson("success", data, "saved")
+			render :json => json, :status => :ok
+		end
+	end
 
-		# :end_record_timestamp, :course_id, :length, :status
-  			vid = Video.new(title: "#{params[:title]}", master_id: "#{params[:master_id]}",
-  				start_record_timestamp: Time.now.getutc,
-  				course_id: "#{params[:course_id]}",
-  				status: "#$STATUS_REC")
-  			vid.save
-  			data = {"video_id" => vid.id, 
-  				"title" => vid.title, 
-  				"master_id" => "#{params[:master_id]}", 
-  				"start_record_timestamp" => Time.now.getutc,
-  				"course_id" => "#{params[:course_id]}",
-  				"status" => "#$STATUS_REC"
-  			}
-  			json = getJson("success", data, "saved")
-  			render :json => json, :status => :ok
-  		end
-  	end
+	def end
+    json = validateParams(params, ["id", "length"])
+    if !json.nil?
+      render :json => json, :status => :not_found
+    else
+      
+      vid = Video.find_by_id(params[:id])
+      vid.end_record_timestamp = Time.now.getutc
+      vid.status = "#$STATUS_EDIT"
+      vid.length = params[:length]
+      vid.save
+      data = {"video_id" => vid.id, 
+          "end_record_timestamp" => vid.end_record_timestamp, 
+          "status" => vid.status, 
+          "length" => vid.length
+        }
+      json = getJson("success", data, "updated")
+      render :json => json, :status => :ok
+    end
+	end
 
-  	def end
-
-  	end
-
-  	def validateParams(params, param)
-  		title = params[param]
-  		if !title || !title == ""
-  			return getJson("failed", params, "missing "+param)
-  		end
-
-  		# master_id = params[:master_id]
-  		# if !title || !title == ""
-  			# return getJson("failed", params, "missing user_id")
-  		# end
-
-  		# course_id
-  	end
+	def validateParams(params,param_to_check)
+    param_to_check.each do |k, v|
+      data = params[k]
+      if !data || !data == "" || data.nil?
+        return getJson("failed", params, "missing "+k)
+      end
+    end
+		return nil
+	end
 end
 
