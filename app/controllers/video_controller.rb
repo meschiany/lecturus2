@@ -8,29 +8,37 @@ class VideoController < MainController
 		end
 	end
 
+	def save_img
+		data_url = params[:imgBase64]
+		puts data_url
+		name = params[:name]
+		png = Base64.decode64(data_url['data:image/png;base64,'.length .. -1])
+		File.open(Rails.root.join('app/assets/uploads/'+name+'.png'), 'wb') { |f| f.write(png) }
+		head :ok
+	end
+
 	def new
 		json = validateParams(params, "title")
 		if !json.nil?
 			render :json => json, :status => :not_found
-		end
-
+		else
 
 		# :end_record_timestamp, :course_id, :length, :status
-		vid = Video.new(title: "#{params[:title]}", master_id: "#{params[:master_id]}",
-			start_record_timestamp: Time.now.getutc,
-			course_id: "#{params[:course_id]}",
-			status: "#$STATUS_REC")
-		vid.save
-		data = {"video_id" => vid.id, 
-			"title" => vid.title, 
-			"master_id" => "#{params[:master_id]}", 
-			"start_record_timestamp" => Time.now.getutc,
-			"course_id" => "#{params[:course_id]}",
-			"status" => "#$STATUS_REC"
-		}
-		json = getJson("success", data, "saved")
-		render :json => json, :status => :ok
-	
+  			vid = Video.new(title: "#{params[:title]}", master_id: "#{params[:master_id]}",
+  				start_record_timestamp: Time.now.getutc,
+  				course_id: "#{params[:course_id]}",
+  				status: "#$STATUS_REC")
+  			vid.save
+  			data = {"video_id" => vid.id, 
+  				"title" => vid.title, 
+  				"master_id" => "#{params[:master_id]}", 
+  				"start_record_timestamp" => Time.now.getutc,
+  				"course_id" => "#{params[:course_id]}",
+  				"status" => "#$STATUS_REC"
+  			}
+  			json = getJson("success", data, "saved")
+  			render :json => json, :status => :ok
+  		end
   	end
 
   	def end

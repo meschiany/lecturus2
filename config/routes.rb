@@ -23,6 +23,8 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
+      get 'save'
+      get 'end'
     end
   end
 
