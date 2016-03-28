@@ -12,7 +12,5 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery-1.11.3.min
-//= require taggd
 //= require_tree .
 

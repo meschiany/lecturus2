@@ -8,6 +8,10 @@ class MainController < ApplicationController
   	return {"status" => status, "data" => data, "msg" => msg}
   end
 
+  def test
+  	
+  end
+
 end
 
 	

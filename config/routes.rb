@@ -14,7 +14,7 @@ Myapp::Application.routes.draw do
   #   resources :products
   resources :main do
     collection do
-      get 'video'
+      get 'test'
       get 'new_video'
     end
   end
@@ -23,7 +23,7 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
-      get 'upload'
+      post 'upload'
       get 'end'
     end
   end

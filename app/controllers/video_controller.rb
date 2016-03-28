@@ -11,12 +11,13 @@ class VideoController < MainController
 	end
 
 	def upload
-		data_url = params[:data]
-		puts data_url
-		name = params[:name]
-		png = Base64.decode64(data_url['data:image/png;base64,'.length .. -1])
-		File.open(Rails.root.join('app/assets/uploads/'+name+'.png'), 'wb') { |f| f.write(png) }
-		head :ok
+		body = request.body.read
+		json = getJson("success", body, "show")
+		
+		
+		vid = Base64.decode64(body)
+		File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+'.mov'), 'wb') { |f| f.write(vid) }
+		render :json => json, :status => :ok
 	end
 
 	def new
