@@ -12,8 +12,7 @@ class VideoController < MainController
 
 	def upload
 		body = request.body.read
-		json = getJson("success", body, "show")
-		
+		json = getJson("success", {"content" => "Base64 stuff"}, "show")
 		
 		vid = Base64.decode64(body)
 		File.open(Rails.root.join('public/uploads/'+params[:id].to_s+'.mp4'), 'wb') { |f| f.write(vid) }
