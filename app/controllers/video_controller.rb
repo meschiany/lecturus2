@@ -16,7 +16,7 @@ class VideoController < MainController
 		
 		
 		vid = Base64.decode64(body)
-		File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+'.mov'), 'wb') { |f| f.write(vid) }
+		File.open(Rails.root.join('public/uploads/'+params[:id].to_s+'.mp4'), 'wb') { |f| f.write(vid) }
 		render :json => json, :status => :ok
 	end
 
