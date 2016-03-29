@@ -19,7 +19,17 @@ ActiveRecord::Schema.define(:version => 20160326144821) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "contents", :force => true do |t|
+  create_table "courses", :force => true do |t|
+    t.integer  "college_id"
+    t.string   "name"
+    t.string   "professor"
+    t.integer  "year"
+    t.integer  "semester"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "posts", :force => true do |t|
     t.integer  "video_id"
     t.integer  "second"
     t.integer  "user_id"
@@ -28,16 +38,6 @@ ActiveRecord::Schema.define(:version => 20160326144821) do
     t.text     "text"
     t.string   "f_type"
     t.string   "f_name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "courses", :force => true do |t|
-    t.integer  "college_id"
-    t.string   "name"
-    t.string   "professor"
-    t.integer  "year"
-    t.integer  "semester"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

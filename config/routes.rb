@@ -28,6 +28,13 @@ Myapp::Application.routes.draw do
     end
   end
 
+  resources :post do
+    collection do
+      get 'show'
+      get 'new'
+    end
+  end
+
   # Sample resource route with options:
   #   resources :products do
   #     member do

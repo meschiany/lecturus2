@@ -43,34 +43,24 @@ class VideoController < MainController
 	end
 
 	def end
-    json = validateParams(params, ["id", "length"])
-    if !json.nil?
-      render :json => json, :status => :not_found
-    else
-      
-      vid = Video.find_by_id(params[:id])
-      vid.end_record_timestamp = Time.now.getutc
-      vid.status = "#$STATUS_EDIT"
-      vid.length = params[:length]
-      vid.save
-      data = {"video_id" => vid.id, 
-          "end_record_timestamp" => vid.end_record_timestamp, 
-          "status" => vid.status, 
-          "length" => vid.length
-        }
-      json = getJson("success", data, "updated")
-      render :json => json, :status => :ok
-    end
+    	json = validateParams(params, ["id", "length"])
+    	if !json.nil?
+			render :json => json, :status => :not_found
+    	else
+			vid = Video.find_by_id(params[:id])
+			vid.end_record_timestamp = Time.now.getutc
+			vid.status = "#$STATUS_EDIT"
+			vid.length = params[:length]
+			vid.save
+			data = {"video_id" => vid.id, 
+			  "end_record_timestamp" => vid.end_record_timestamp, 
+			  "status" => vid.status, 
+			  "length" => vid.length
+			}
+			json = getJson("success", data, "updated")
+			render :json => json, :status => :ok
+	    end
 	end
 
-	def validateParams(params,param_to_check)
-    param_to_check.each do |k, v|
-      data = params[k]
-      if !data || !data == "" || data.nil?
-        return getJson("failed", params, "missing "+k)
-      end
-    end
-		return nil
-	end
+
 end
-

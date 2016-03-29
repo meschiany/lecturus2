@@ -15,8 +15,9 @@ $(document).ready(function(){
 
 	        reader.onload = function(readerEvt) {
 	            var binaryString = readerEvt.target.result;
+	            id = parseInt(location.hash.replace("#",""));
 	            document.getElementById("base64textarea").value = btoa(binaryString);
-	            $.post("/video/upload?id=13",btoa(binaryString),function(data, status){
+	            $.post("/video/upload?id="+id,btoa(binaryString),function(data, status){
 					console.log(data);
 				});
 	        };
