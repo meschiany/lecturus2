@@ -12,7 +12,7 @@ class VideoController < MainController
 
 	def upload
 		body = request.body.read
-		json = getJson("success", {"content" => "Base64 stuff"}, "show")
+		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
 		
 		vid = Base64.decode64(body)
 		video_temp_file = write_to_file(vid)
