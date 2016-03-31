@@ -1,12 +1,11 @@
 defaults: &defaults
   aws_access_key_id: "AKIAJ7A5OLSJHGC7DWWQ"
   aws_secret_access_key: "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"
-  bucket: 'https://s3-ap-southeast-1.amazonaws.com/lecturus'
+  bucket: 'lecturus'
 
 development:
   <<: *defaults
 
 production: &production
   <<: *defaults
-  bucket: 'videos.minute.ly'
 
