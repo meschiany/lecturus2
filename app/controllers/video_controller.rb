@@ -15,9 +15,19 @@ class VideoController < MainController
 		json = getJson("success", {"content" => "Base64 stuff"}, "show")
 		
 		vid = Base64.decode64(body)
-		File.open(Rails.root.join('public/uploads/'+params[:id].to_s+'.mp4'), 'wb') { |f| f.write(vid) }
+		video_temp_file = write_to_file(vid)
+		VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
+		# File.open(Rails.root.join('public/uploads/'+params[:id].to_s+'.mp4'), 'wb') { |f| f.write(vid) }
 		render :json => json, :status => :ok
 	end
+
+	def write_to_file(content)
+      thumbnail_file = Tempfile.new(['video','.mp4'])
+      thumbnail_file.binmode # note that the tempfile must be in binary mode
+      thumbnail_file.write content
+      thumbnail_file.rewind
+      thumbnail_file
+    end
 
 	def new
 		json = validateParams(params,["title", "master_id", "course_id"])
