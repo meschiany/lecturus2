@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(:version => 20160326144821) do
     t.integer  "video_id"
     t.integer  "second"
     t.integer  "user_id"
-    t.integer  "type"
+    t.integer  "post_type"
     t.boolean  "active"
     t.text     "text"
     t.string   "f_type"

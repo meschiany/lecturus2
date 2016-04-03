@@ -32,6 +32,7 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
+      get 'get_by_video_id'
     end
   end
 

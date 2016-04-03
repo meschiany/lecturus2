@@ -17,17 +17,31 @@ class PostController < MainController
 		else
 			post = Post.new(video_id: "#{params[:video_id]}", 
 				second: "#{params[:second]}",
+				post_type: "#{params[:type]}",
+				text: "#{params[:text]}",
 				user_id: "#{params[:user_id]}",
-				type: "#{params[:type]}",
-				text: "#{params[:text]}")
+				active: true)
+
 			post.save
 			data = {"video_id" => params[:video_id], 
 				"second" => params[:second], 
 				"user_id" => params[:user_id], 
 				"type" => params[:type], 
-				"text" => params[:text]
+				"text" => params[:text],
+				"active" => true
 			}
 			json = getJson("success", data, "saved")
+			render :json => json, :status => :ok
+		end
+	end
+
+	def get_by_video_id
+		json = validateParams(params,["video_id"])
+		if !json.nil?
+			render :json => json, :status => :not_found
+		else
+			posts = Post.where(video_id: "#{params[:video_id]}")
+			json = getJson("success", posts, "get by video_id=#{params[:video_id]}")
 			render :json => json, :status => :ok
 		end
 	end
