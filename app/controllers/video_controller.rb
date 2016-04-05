@@ -11,13 +11,15 @@ class VideoController < MainController
 	end
 
 	def upload
-		body = request.body.read
-		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
+		puts "-------------------"
+		puts params
+		puts request.body
+		puts "-------------------"
+		body = params["video"][:filename]
 		
-		vid = Base64.decode64(body)
+		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
 		video_temp_file = write_to_file(vid)
 		VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
-		# File.open(Rails.root.join('public/uploads/'+params[:id].to_s+'.mp4'), 'wb') { |f| f.write(vid) }
 		render :json => json, :status => :ok
 	end
 
