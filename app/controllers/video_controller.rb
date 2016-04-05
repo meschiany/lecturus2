@@ -15,7 +15,7 @@ class VideoController < MainController
 		# puts params
 		# puts request.body
 		puts "-------------------"
-		body = params["video"]
+		body = params["video"].tempfile
 		
 		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
 		video_temp_file = write_to_file(body)
