@@ -18,7 +18,7 @@ class VideoController < MainController
 		body = params["video"]
 		
 		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
-		video_temp_file = write_to_file(vid)
+		video_temp_file = write_to_file(body)
 		VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
 		render :json => json, :status => :ok
 	end
