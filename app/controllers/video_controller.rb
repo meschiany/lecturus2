@@ -1,24 +1,7 @@
 class VideoController < MainController
-
-	def show
-		vid = Video.find_by_id(params[:id])
-		if vid
-      json = getJson("success", vid, "show")
-			render :json => json, :status => :ok
-		else
-			render :json => {"msg"=>"not found"}, :status => :not_found
-		end
-	end
-
 	def upload
-		# puts "-------------------"
-		# puts params
-		# puts request.body
-		puts "-------------------"
 		puts params[:video].original_filename
-		puts "+++++++++++++++++++"
 		body = params[:video].read
-		
 		json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
 		video_temp_file = write_to_file(body)
 		VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
@@ -34,26 +17,11 @@ class VideoController < MainController
     end
 
 	def new
-		json = validateParams(params,["title", "master_id", "course_id"])
-		if !json.nil?
-			render :json => json, :status => :not_found
-		else
-      
-			vid = Video.new(title: "#{params[:title]}", master_id: "#{params[:master_id]}",
-				start_record_timestamp: Time.now.getutc,
-				course_id: "#{params[:course_id]}",
-				status: "#$STATUS_REC")
-			vid.save
-			data = {"video_id" => vid.id, 
-				"title" => vid.title, 
-				"master_id" => "#{params[:master_id]}", 
-				"start_record_timestamp" => Time.now.getutc,
-				"course_id" => "#{params[:course_id]}",
-				"status" => "#$STATUS_REC"
-			}
-			json = getJson("success", data, "saved")
-			render :json => json, :status => :ok
-		end
+		params.store(:status, "#$STATUS_REC")
+		params.store(:start_record_timestamp,Time.now.getutc)
+		localParams = ["title", "master_id", "course_id", "status", "start_record_timestamp"]
+		json = setNew("#{params['controller']}".camelize, params, localParams)
+		render :json => json, :status => :ok
 	end
 
 	def end
@@ -75,6 +43,5 @@ class VideoController < MainController
 			render :json => json, :status => :ok
 	    end
 	end
-
 
 end

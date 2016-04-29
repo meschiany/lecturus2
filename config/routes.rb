@@ -25,6 +25,7 @@ Myapp::Application.routes.draw do
       get 'new'
       post 'upload'
       get 'end'
+      get 'get'
     end
   end
 
@@ -32,7 +33,31 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
-      get 'get_by_video_id'
+      get 'get'
+    end
+  end
+
+  resources :college do
+    collection do
+      get 'show'
+      get 'new'
+      get 'get'
+    end
+  end
+
+  resources :course do
+    collection do
+      get 'show'
+      get 'new'
+      get 'get'
+    end
+  end
+
+  resources :user do
+    collection do
+      get 'show'
+      get 'new'
+      get 'get'
     end
   end
 

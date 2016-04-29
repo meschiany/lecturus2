@@ -1,7 +1,7 @@
-class PostController < MainController
+class UserController < MainController
 
 	def new
-		localParams = ["video_id", "second", "user_id", "post_type", "text", "active"]
+		localParams = ["email", "f_name", "l_name", "college_id", "password"]
 		json = setNew("#{params['controller']}".camelize, params, localParams)
 		render :json => json, :status => :ok
 	end
