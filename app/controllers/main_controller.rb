@@ -33,6 +33,7 @@ class MainController < ApplicationController
   def _isSessionTimeValid(user)
     if (user['last_login_timestamp'].to_i)+86400 < Time.now.to_i
       result = {"bool" => false, "msg" => "session timed out"}
+      user.update_attribute(:token, "")
     else
       result = {"bool" => true, "msg" => "valid"}
     end
