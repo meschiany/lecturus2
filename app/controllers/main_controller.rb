@@ -30,19 +30,32 @@ class MainController < ApplicationController
     return json
   end
 
+  def _isSessionTimeValid(user)
+    if (user['last_login_timestamp'].to_i)+86400 < Time.now.to_i
+      result = {:bool => false, :msg => "session timed out"}
+    else
+      result = {:bool => true, :msg => "valid"}
+    end
+    return result 
+  end
+
   def _isTokenValid(params)
     if !params["token"] || params["token"] == "" || params["token"].nil?
-      return false
+      result = {:bool => false, :msg => "no token was sent"}
+    else
+      user = User.where("token='#{params['token']}'")
+      if user.size<=0
+        result = {:bool => false, :msg => "no session with this token"}
+      else
+        result = _isSessionTimeValid(user[0])
+      end
     end
-    user = User.where("token='#{params['token']}'")
-    if user.size<=0
-      return false
-    end
-    return true
+    return result
   end
 
   def show
-    if _isTokenValid(params)
+    tokenValid = _isTokenValid(params)
+    if tokenValid[:bool]
       vid = "#{params['controller']}".camelize.constantize.find_by_id(params[:id])
       if vid
         json = _getJson("success", vid, "show")
@@ -52,7 +65,7 @@ class MainController < ApplicationController
         result = {:json => {"msg"=>"not found"}, :status => :not_found}
       end
     else
-      json = _getJson("failed", {}, "No valid token was sent")
+      json = _getJson("failed", {}, tokenValid[:msg])
       result = {:json => json, :status => :not_found}
     end
     render result
@@ -84,7 +97,8 @@ class MainController < ApplicationController
   end
 
   def setNew(className, params, localParams)
-    if _isTokenValid(params)
+    tokenValid = _isTokenValid(params)
+    if tokenValid['bool']
       json = validateParams(params,localParams)
       if json.nil?
         
@@ -105,18 +119,19 @@ class MainController < ApplicationController
       end
       result = {:json => json, :status => :not_found}
     else
-      json = _getJson("failed", {}, "No valid token was sent")
+      json = _getJson("failed", {}, tokenValid['msg'])
       result = {:json => json, :status => :not_found}
     end
     return result
   end
 
   def get
-    if _isTokenValid(params)
+    tokenValid = _isTokenValid(params)
+    if tokenValid['bool']
       json = _getData("#{params['controller']}".camelize, params)
       result = {:json => json, :status => :ok}      
     else
-      json = _getJson("failed", {}, "No valid token was sent")
+      json = _getJson("failed", {}, tokenValid['msg'])
       result = {:json => json, :status => :not_found}
     end
     render result

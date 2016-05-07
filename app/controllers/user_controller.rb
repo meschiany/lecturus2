@@ -23,7 +23,7 @@ require 'digest/sha1'
 		render :json => json, :status => :ok
 	end
 
-	def login
+	def auth
 		localParams = ["email", "password"]
 		json = validateParams(params,localParams)
     	if json.nil?

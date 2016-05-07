@@ -1,6 +1,7 @@
 class VideoController < MainController
 	def upload
-		if _isTokenValid()
+		tokenValid = _isTokenValid(params)
+    	if tokenValid['bool']
 			puts params[:video].original_filename
 			body = params[:video].read
 			json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
@@ -8,7 +9,7 @@ class VideoController < MainController
 			VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
 			result = {:json => json, :status => :ok}
 		else
-			json = _getJson("failed", {}, "No valid token was sent")
+			json = _getJson("failed", {}, tokenValid['msg'])
     		result = {:json => json, :status => :not_found}
 		end
 		render result
@@ -31,7 +32,8 @@ class VideoController < MainController
 	end
 
 	def end
-		if _isTokenValid(params)
+		tokenValid = _isTokenValid(params)
+    	if tokenValid['bool']
 			json = validateParams(params, ["id", "length"])
     		if json.nil?
 				vid = Video.find_by_id(params[:id])
@@ -42,7 +44,8 @@ class VideoController < MainController
 				data = {"video_id" => vid.id, 
 				  "end_record_timestamp" => vid.end_record_timestamp, 
 				  "status" => vid.status, 
-				  "length" => vid.length
+				  "length" => vid.length,
+				  "id" => params[:id]
 				}
 				json = getJson("success", data, "updated")
 				result = {:json => json, :status => :ok}
@@ -50,7 +53,7 @@ class VideoController < MainController
 				result = {:json => json, :status => :not_found}
 		    end
 		else
-			json = _getJson("failed", {}, "No valid token was sent")
+			json = _getJson("failed", {}, tokenValid['msg'])
       		result = {:json => json, :status => :not_found}
 		end
     	render result

@@ -57,7 +57,7 @@ Myapp::Application.routes.draw do
       get 'show'
       get 'new'
       get 'get'
-      get 'login'
+      get 'auth'
       get 'logout'
     end
   end
