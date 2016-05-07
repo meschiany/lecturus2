@@ -25,8 +25,8 @@ class VideoController < MainController
 
 	def new
 		params.store(:status, "#$STATUS_REC")
-		params.store(:start_record_timestamp,Time.now.getutc)
-		localParams = ["title", "master_id", "course_id", "status", "start_record_timestamp"]
+		params.store(:start_record_timestamp, "#{Time.now.getutc}")
+		localParams = ["title", "master_id", "course_id","token", "class", "status", "start_record_timestamp"]
 		result = setNew("#{params['controller']}".camelize, params, localParams)
       	render result
 	end
