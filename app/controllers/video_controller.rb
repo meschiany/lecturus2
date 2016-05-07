@@ -1,7 +1,7 @@
 class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
-    	if tokenValid['bool']
+		if tokenValid['bool']
 			puts params[:video].original_filename
 			body = params[:video].read
 			json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
@@ -21,7 +21,7 @@ class VideoController < MainController
       thumbnail_file.write content
       thumbnail_file.rewind
       thumbnail_file
-    end
+	end
 
 	def new
 		params.store(:status, "#$STATUS_REC")
@@ -33,25 +33,25 @@ class VideoController < MainController
 
 	def end
 		tokenValid = _isTokenValid(params)
-    	if tokenValid['bool']
+		if tokenValid['bool']
 			json = validateParams(params, ["id", "length"])
-    		if json.nil?
+			if json.nil?
 				vid = Video.find_by_id(params[:id])
 				vid.end_record_timestamp = Time.now.getutc
 				vid.status = "#$STATUS_EDIT"
 				vid.length = params[:length]
 				vid.save
 				data = {"video_id" => vid.id, 
-				  "end_record_timestamp" => vid.end_record_timestamp, 
-				  "status" => vid.status, 
-				  "length" => vid.length,
-				  "id" => params[:id]
+					"end_record_timestamp" => vid.end_record_timestamp, 
+					"status" => vid.status, 
+					"length" => vid.length,
+					"id" => params[:id]
 				}
 				json = getJson("success", data, "updated")
 				result = {:json => json, :status => :ok}
 			else
 				result = {:json => json, :status => :not_found}
-		    end
+			end
 		else
 			json = _getJson("failed", {}, tokenValid['msg'])
       		result = {:json => json, :status => :not_found}

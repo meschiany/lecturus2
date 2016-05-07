@@ -19,4 +19,16 @@ class ContentController < MainController
       	render result
 	end
 
+	def new_content(params, localParams)
+		tokenValid = _isTokenValid(params)
+		if tokenValid['bool']			
+			json = setNew("#{params['controller']}".camelize, params, localParams)
+			result = {:json => json, :status => :ok}
+		else
+			json = _getJson("failed", {}, tokenValid['msg'])
+      		result = {:json => json, :status => :not_found}
+		end
+      	return result
+	end
+
 end
