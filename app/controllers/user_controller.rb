@@ -34,7 +34,7 @@ require 'digest/sha1'
     			params["token"] = token;
     			json = _getJson("success",params,"login success");
     		else
-    			json = _getJson("success",params,"Wrong user name or password")
+    			json = _getJson("failed",params,"Wrong user name or password")
     		end
     	end
     	render :json => json, :status => :ok
