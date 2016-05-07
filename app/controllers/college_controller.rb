@@ -2,8 +2,8 @@ class CollegeController < MainController
 	
 	def new
 		localParams = ["name"]
-		json = setNew("#{params['controller']}".camelize, params, localParams)
-		render :json => json, :status => :ok
+		result = setNew("#{params['controller']}".camelize, params, localParams)
+		render result
 	end
 
 end
