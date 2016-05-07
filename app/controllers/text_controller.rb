@@ -1,9 +1,9 @@
-class PostController < MainController
+class TextController < ContentController
 
 	def new
 		tokenValid = _isTokenValid(params)
-    	if tokenValid['bool']
-			localParams = ["video_id", "second", "user_id", "post_type", "text", "active"]
+		if tokenValid['bool']
+			localParams = ["video_id", "second", "user_id", "active", "description", "content"]
 			json = setNew("#{params['controller']}".camelize, params, localParams)
 			result = {:json => json, :status => :ok}
 		else

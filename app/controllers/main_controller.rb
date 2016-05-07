@@ -8,7 +8,6 @@ class MainController < ApplicationController
   	return {"status" => status, "data" => data, "msg" => msg}
   end
 
-
   def validateParams(params, param_to_check)
     param_to_check.each do |k, v|
       data = params[k]
@@ -54,7 +53,7 @@ class MainController < ApplicationController
     return result
   end
 
-  def show
+  def show()
     tokenValid = _isTokenValid(params)
     if tokenValid["bool"]
       vid = "#{params['controller']}".camelize.constantize.find_by_id(params[:id])
@@ -97,9 +96,9 @@ class MainController < ApplicationController
     return json
   end
 
-  def setNew(className, params, localParams)
+  def setNew(className, params, localParams, should_validate=true)
     tokenValid = _isTokenValid(params)
-    if tokenValid['bool']
+    if (tokenValid['bool'] || !should_validate)
       json = validateParams(params,localParams)
       if json.nil?
         
@@ -117,8 +116,9 @@ class MainController < ApplicationController
         data.store(:id, record.id)
         json = _getJson("success", data, "saved")
         result = {:json => json, :status => :ok}
+      else
+        result = {:json => json, :status => :not_found}
       end
-      result = {:json => json, :status => :not_found}
     else
       json = _getJson("failed", {}, tokenValid['msg'])
       result = {:json => json, :status => :not_found}
@@ -126,7 +126,7 @@ class MainController < ApplicationController
     return result
   end
 
-  def get
+  def get()
     tokenValid = _isTokenValid(params)
     if tokenValid['bool']
       json = _getData("#{params['controller']}".camelize, params)
@@ -138,8 +138,4 @@ class MainController < ApplicationController
     render result
   end
 
-
 end
-
-	
-

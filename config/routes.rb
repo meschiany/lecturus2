@@ -28,11 +28,21 @@ Myapp::Application.routes.draw do
     end
   end
 
-  resources :post do
+  resources :file do
     collection do
       get 'show'
       get 'new'
       get 'get'
+      get 'deactivate'
+    end
+  end
+
+  resources :text do
+    collection do
+      get 'show'
+      get 'new'
+      get 'get'
+      get 'deactivate'
     end
   end
 

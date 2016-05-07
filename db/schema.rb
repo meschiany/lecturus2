@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160506093543) do
+ActiveRecord::Schema.define(:version => 20160507170412) do
 
   create_table "colleges", :force => true do |t|
     t.string   "name"
@@ -29,17 +29,27 @@ ActiveRecord::Schema.define(:version => 20160506093543) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "posts", :force => true do |t|
+  create_table "files", :force => true do |t|
     t.integer  "video_id"
     t.integer  "second"
     t.integer  "user_id"
-    t.integer  "post_type"
     t.boolean  "active"
-    t.text     "text"
-    t.string   "f_type"
-    t.string   "f_name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.text     "description"
+    t.string   "file_type"
+    t.string   "file_name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "texts", :force => true do |t|
+    t.integer  "video_id"
+    t.integer  "second"
+    t.integer  "user_id"
+    t.boolean  "active"
+    t.string   "description"
+    t.text     "content"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "users", :force => true do |t|

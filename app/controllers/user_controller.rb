@@ -17,34 +17,9 @@ require 'digest/sha1'
 
 	end
 
-	def setNew(className, params, localParams)
-		json = validateParams(params,localParams)
-		if json.nil?
-
-			values = params.values
-			record = className.constantize.new
-			record[:"#{localParams[0]}"] = values[0]
-			data = {localParams[0] => values[0]}
-			if (localParams.length > 1)
-			    localParams[1..-1].each.with_index(1) do |item,i|
-			      record[:"#{localParams[i]}"] = values[i]
-			      data.store(:"#{localParams[i]}", values[i])
-			    end 
-			end
-			record.save
-			data.store(:id, record.id)
-			json = _getJson("success", data, "saved")
-			result = {:json => json, :status => :ok}
-		end
-		result = {:json => json, :status => :not_found}
-		return result
-	end
-
-
-
 	def new
 		localParams = ["email", "f_name", "l_name", "college_id", "password"]
-		json = setNew("#{params['controller']}".camelize, params, localParams)
+		json = setNew("#{params['controller']}".camelize, params, localParams, false)
 		render :json => json, :status => :ok
 	end
 

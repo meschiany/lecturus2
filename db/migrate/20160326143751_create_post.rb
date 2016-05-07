@@ -14,6 +14,3 @@ class CreatePost < ActiveRecord::Migration
 		end
   	end
 end
-
-
-
