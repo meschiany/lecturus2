@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(:version => 20160507170412) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "files", :force => true do |t|
+  create_table "posts", :force => true do |t|
     t.integer  "video_id"
     t.integer  "second"
     t.integer  "user_id"
