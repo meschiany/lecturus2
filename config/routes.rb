@@ -28,7 +28,7 @@ Myapp::Application.routes.draw do
     end
   end
 
-  resources :file do
+  resources :post do
     collection do
       get 'show'
       get 'new'
