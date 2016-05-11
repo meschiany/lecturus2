@@ -14,7 +14,7 @@ Myapp::Application.routes.draw do
   #   resources :products
   resources :main do
     collection do
-
+      get 'test'
     end
   end
 

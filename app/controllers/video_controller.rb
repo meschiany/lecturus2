@@ -1,17 +1,18 @@
 class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
-		if tokenValid['bool']
-			puts params[:video].original_filename
-			body = params[:video].read
+		# if tokenValid['bool']
+			puts params[:video].to_s
+			# body = params[:video].to_s.read
+			body = params[:video].to_s
 			json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
 			video_temp_file = _write_to_file(body)
 			VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
 			result = {:json => json, :status => :ok}
-		else
-			json = _getJson("failed", {}, tokenValid['msg'])
-    		result = {:json => json, :status => :not_found}
-		end
+		# else
+			# json = _getJson("failed", {}, tokenValid['msg'])
+    		# result = {:json => json, :status => :not_found}
+		# end
 		render result
 	end
 

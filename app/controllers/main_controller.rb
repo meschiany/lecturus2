@@ -3,6 +3,8 @@ class MainController < ApplicationController
 
   $STATUS_REC = "RECORDING"
   $STATUS_EDIT = "EDITING"
+  def test
+  end
 
   def _getJson(status, data, msg)
   	return {"status" => status, "data" => data, "msg" => msg}
