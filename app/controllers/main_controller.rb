@@ -105,13 +105,14 @@ class MainController < ApplicationController
       if json.nil?
         
         values = params.values
+        keys = params.keys
         record = className.constantize.new
-        record[:"#{localParams[0]}"] = values[0]
+        record[keys[0]] = values[0]
         data = {localParams[0] => values[0]}
         if (localParams.length > 1)
             localParams[1..-1].each.with_index(1) do |item,i|
-              record[:"#{localParams[i]}"] = values[i]
-              data.store(:"#{localParams[i]}", values[i])
+              record[keys[i]] = values[i]
+              data.store(keys[i], values[i])
             end 
         end
         record.save

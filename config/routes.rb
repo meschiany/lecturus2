@@ -34,6 +34,8 @@ Myapp::Application.routes.draw do
       get 'new'
       get 'get'
       get 'deactivate'
+      get 'upload'
+      post 'upload'
     end
   end
 

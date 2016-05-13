@@ -10,20 +10,29 @@ $(document).ready(function(){
 	    var files = evt.target.files;
 	    var file = files[0];
 
-	    if (files && file) {
-	        var reader = new FileReader();
-
-	        reader.onload = function(readerEvt) {
-	            var binaryString = readerEvt.target.result;
-	            id = parseInt(location.hash.replace("#",""));
-	            document.getElementById("base64textarea").value = btoa(binaryString);
-	            $.post("/video/upload?id="+id, {video:btoa(binaryString)}, function(data, status){
-					console.log(data);
-				});
-	        };
-
-	        reader.readAsBinaryString(file);
-	    }
+	    var formData = new FormData();
+		formData.append('section', 'general');
+		formData.append('action', 'previewImg');
+		formData.append('image', file);
+		formData.append('token', '36135354e814aae0bc84fad5ea83ebbb9816a151')
+		formData.append('id',222);
+		formData.append('second',22);
+		formData.append('user_id',2);
+		formData.append('active',true);
+		formData.append('description',"Description");
+		formData.append('file_type','jpg');
+	    id = 222
+		$.ajax({
+			type: 'POST',
+		    url: "/post/upload",
+		    data: formData,
+		    contentType: false,
+		    processData: false
+		});
+	   //          $.post("/video/upload?id="+id, {video:binaryString}, function(data, status){
+				// 	console.log(data);
+				// });
+	   //      };
 	};
 
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
