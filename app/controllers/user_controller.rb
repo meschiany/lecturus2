@@ -19,11 +19,19 @@ require 'digest/sha1'
 
 	def new
 		localParams = ["email", "f_name", "l_name", "college_id", "password"]
-		json = setNew("#{params['controller']}".camelize, params, localParams, false)
-		render :json => json, :status => :ok
+		result = setNew("#{params['controller']}".camelize, params, localParams, false)
+		if (result[:status] === :ok)
+			login(params["email"], params["password"])
+		else
+			render result
+		end
 	end
 
-	def auth
+	def login(email, password)
+		if !email.nil? && !password.nil?
+			params["email"] =  email
+			params["password"] = password
+		end
 		localParams = ["email", "password"]
 		json = validateParams(params,localParams)
     	if json.nil?
@@ -55,7 +63,7 @@ require 'digest/sha1'
     	render :json => json, :status => :ok
 	end
 
-	def validate
+	def auth
 		tokenRes = _isTokenValid(params)
 		json = _getJson(tokenRes["bool"] ? "success" : "failed" ,params ,tokenRes["msg"])
 		render :json => json, :status => :ok 
