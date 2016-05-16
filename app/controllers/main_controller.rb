@@ -141,4 +141,8 @@ class MainController < ApplicationController
     render result
   end
 
+  def ffmpeg
+    @path ||= File.expand_path(`which melt`)
+    
+  end
 end
