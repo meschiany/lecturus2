@@ -40,8 +40,10 @@ class VideoController < MainController
 
 	def _write_to_local
 		content = params[:video].read
-		File.open(Rails.root.join('assets/uploads/'+params[:id]+"_"+params[:index]), 'wb') { |f| f.write(content) }
-		render :ok
+		File.open(Rails.root.join('app/assets/uploads/',params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
+			f.write(content) 
+		end
+		head :ok
 	end
 
 	def upload
@@ -49,7 +51,9 @@ class VideoController < MainController
 		# if tokenValid['bool']
 			content = params[:video].read
 			$test_file.write content
-			File.open(Rails.root.join('assets/uploads/'+params[:id]+"_"+params[:index]), 'wb') { |f| f.write(content) }
+			File.open(Rails.root.join('app/assets/uploads/',params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
+				f.write(content) 
+			end
 
 			json = _getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
 			
