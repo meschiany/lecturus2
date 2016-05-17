@@ -1,30 +1,37 @@
 class VideoController < MainController
-	def upload
-		tokenValid = _isTokenValid(params)
-		# if tokenValid['bool']
-			puts params[:video].to_s
-			# body = params[:video].to_s.read
-			body = params[:video].to_s
-			json = getJson("success", {"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+params[:id].to_s+".mp4"}, "show")
-			video_temp_file = _write_to_file(body)
-			VideoUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+'.mp4')
-			result = {:json => json, :status => :ok}
-		# else
-			# json = _getJson("failed", {}, tokenValid['msg'])
-    		# result = {:json => json, :status => :not_found}
-		# end
-		render result
+	
+	$test_file
+
+	def _setNewTempFile
+		$test_file = Tempfile.new(['video','.mp4'])}
+		$test_file.binmode # note that the tempfile must be in binary mode
 	end
 
-	def _write_to_file(content)
-      thumbnail_file = Tempfile.new(['video','.mp4'])
-      thumbnail_file.binmode # note that the tempfile must be in binary mode
-      thumbnail_file.write content
-      thumbnail_file.rewind
-      thumbnail_file
+	def _closeAndUpload()
+		$test_file.rewind
+		$test_file
+		VideoUploader.new.upload_video_to_s3($test_file, vidId.to_s+'.mp4')
 	end
+
+	def _updateVideoRecord(vidId, length)
+		vid = Video.find_by_id(vidId)
+		vid.end_record_timestamp = Time.now.getutc
+		vid.status = "#$STATUS_EDIT"
+		vid.length = length
+		vid.save
+		return {"video_id" => vid.id, 
+			"end_record_timestamp" => vid.end_record_timestamp, 
+			"status" => vid.status, 
+			"length" => vid.length,
+			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+vid+".mp4"
+		}
+	end
+
 
 	def new
+
+		_setNewTempFile()
+
 		params.store(:status, "#$STATUS_REC")
 		params.store(:start_record_timestamp, "#{Time.now.getutc}")
 		localParams = ["title", "master_id", "course_id","token", "class", "status", "start_record_timestamp"]
@@ -32,22 +39,31 @@ class VideoController < MainController
       	render result
 	end
 
+
+	def upload
+		tokenValid = _isTokenValid(params)
+		if tokenValid['bool']
+			
+			$test_file << params[:video].read
+			json = getJson("success", {"videoId" => params[:id], "segment" => params[:segment]}, "upload")
+			
+			result = {:json => json, :status => :ok}
+		else
+			json = _getJson("failed", {}, tokenValid['msg'])
+    		result = {:json => json, :status => :not_found}
+		end
+		render result
+	end
+
 	def end
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
 			json = validateParams(params, ["id", "length"])
 			if json.nil?
-				vid = Video.find_by_id(params[:id])
-				vid.end_record_timestamp = Time.now.getutc
-				vid.status = "#$STATUS_EDIT"
-				vid.length = params[:length]
-				vid.save
-				data = {"video_id" => vid.id, 
-					"end_record_timestamp" => vid.end_record_timestamp, 
-					"status" => vid.status, 
-					"length" => vid.length,
-					"id" => params[:id]
-				}
+
+				_closeAndUpload(params[:id].to_s)
+
+				data = _updateVideoRecord(params[:id],params[:length])
 				json = getJson("success", data, "updated")
 				result = {:json => json, :status => :ok}
 			else
