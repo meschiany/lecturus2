@@ -43,7 +43,7 @@ class VideoController < MainController
 		tokenValid = _isTokenValid(params)
 		# if tokenValid['bool']
 			content = params[:video].read
-			$test_file << content
+			$test_file.write content
 			File.open(Rails.root.join('app/assets/uploads/'+params[:id]+"_"+params[:id]), 'wb') { |f| f.write(content) }
 
 			json = _getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
