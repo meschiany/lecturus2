@@ -3,7 +3,7 @@ class VideoController < MainController
 	$test_file
 
 	def _setNewTempFile
-		$test_file = Tempfile.new(['video','.mp4'])}
+		$test_file = Tempfile.new(['video','.mp4'])
 		$test_file.binmode # note that the tempfile must be in binary mode
 	end
 
