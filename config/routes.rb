@@ -24,6 +24,7 @@ Myapp::Application.routes.draw do
       get 'show'
       get 'new'
       post 'upload' 
+      post '_write_to_local'
       get 'end'
       get 'get'
     end
