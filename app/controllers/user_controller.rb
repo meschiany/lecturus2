@@ -27,7 +27,7 @@ require 'digest/sha1'
 		end
 	end
 
-	def login(email, password)
+	def login(email = nil, password = nil)
 		if !email.nil? && !password.nil?
 			params["email"] =  email
 			params["password"] = password
@@ -43,7 +43,7 @@ require 'digest/sha1'
     			json = _getJson("success",params,"login success");
     		else
     			json = _getJson("failed",params,"Wrong user name or password")
-    		end
+    	end
     	end
     	render :json => json, :status => :ok
 	end

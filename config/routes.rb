@@ -71,7 +71,7 @@ Myapp::Application.routes.draw do
       get 'new'
       get 'get'
       get 'auth'
-      get 'validate'
+      get 'login'
       get 'logout'
     end
   end

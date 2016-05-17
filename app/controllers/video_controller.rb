@@ -44,7 +44,7 @@ class VideoController < MainController
 		if tokenValid['bool']
 
 			$test_file << params[:video].read
-			json = getJson("success", {"videoId" => params[:id], "segment" => params[:segment]}, "upload")
+			json = getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
 			
 			result = {:json => json, :status => :ok}
 		else
