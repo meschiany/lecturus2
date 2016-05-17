@@ -41,16 +41,18 @@ class VideoController < MainController
 
 	def upload
 		tokenValid = _isTokenValid(params)
-		if tokenValid['bool']
+		# if tokenValid['bool']
+			content = params[:video].read
+			$test_file << content
+			File.open(Rails.root.join('app/assets/uploads/'+params[:id]+"_"+params[:id]), 'wb') { |f| f.write(content) }
 
-			$test_file << params[:video].read
-			json = getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
+			json = _getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
 			
 			result = {:json => json, :status => :ok}
-		else
-			json = _getJson("failed", {}, tokenValid['msg'])
-    		result = {:json => json, :status => :not_found}
-		end
+		# else
+			# json = _getJson("failed", {}, tokenValid['msg'])
+    		# result = {:json => json, :status => :not_found}
+		# end
 		render result
 	end
 
@@ -63,7 +65,7 @@ class VideoController < MainController
 				_closeAndUpload(params[:id].to_s)
 
 				data = _updateVideoRecord(params[:id],params[:length])
-				json = getJson("success", data, "updated")
+				json = _getJson("success", data, "updated")
 				result = {:json => json, :status => :ok}
 			else
 				result = {:json => json, :status => :not_found}

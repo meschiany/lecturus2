@@ -5,7 +5,7 @@
 
 $(document).ready(function(){
 	var f = true;
-	var url = "/video/start_file";
+	var url = "/video/upload";
 
 	var handleFileSelect = function(evt) {
 	    var files = evt.target.files;
@@ -14,14 +14,14 @@ $(document).ready(function(){
 	    var formData = new FormData();
 		formData.append('section', 'general');
 		formData.append('action', 'previewImg');
-		formData.append('image', file);
+		formData.append('video', file);
 		formData.append('token', '36135354e814aae0bc84fad5ea83ebbb9816a151')
 		formData.append('id',222);
 		formData.append('second',22);
 		formData.append('user_id',2);
 		formData.append('active',true);
 		formData.append('description',"Description");
-		formData.append('file_type','jpg');
+		formData.append('file_type','mp4');
 
 		$.ajax({
 			type: 'POST',
