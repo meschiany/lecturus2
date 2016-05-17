@@ -29,7 +29,6 @@ class VideoController < MainController
 
 
 	def new
-
 		_setNewTempFile()
 
 		params.store(:status, "#$STATUS_REC")
@@ -43,7 +42,7 @@ class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
-			
+
 			$test_file << params[:video].read
 			json = getJson("success", {"videoId" => params[:id], "segment" => params[:segment]}, "upload")
 			
