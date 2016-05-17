@@ -143,6 +143,9 @@ class MainController < ApplicationController
 
   def ffmpeg
     @path ||= File.expand_path(`which melt`)
-    
+    video1 = S3Helper.get_file(name)
+    # video2 = S3Helper.get_file(name)
+    outputfile = VideoProcessor.new("concat:61.mp4|61.mp4")
+    VideoUploader.new.upload_video_to_s3(outputfile, 'out1.mp4')
   end
 end

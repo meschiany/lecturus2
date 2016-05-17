@@ -26,6 +26,8 @@ Myapp::Application.routes.draw do
       post 'upload' 
       get 'end'
       get 'get'
+      post 'start_file'
+      post 'end_file'
     end
   end
 

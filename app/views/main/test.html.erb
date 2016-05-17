@@ -4,7 +4,8 @@
 
 
 $(document).ready(function(){
-	
+	var f = true;
+	var url = "/video/start_file";
 
 	var handleFileSelect = function(evt) {
 	    var files = evt.target.files;
@@ -21,18 +22,15 @@ $(document).ready(function(){
 		formData.append('active',true);
 		formData.append('description',"Description");
 		formData.append('file_type','jpg');
-	    id = 222
+
 		$.ajax({
 			type: 'POST',
-		    url: "/post/upload",
+		    url: url,
 		    data: formData,
 		    contentType: false,
 		    processData: false
 		});
-	   //          $.post("/video/upload?id="+id, {video:binaryString}, function(data, status){
-				// 	console.log(data);
-				// });
-	   //      };
+		url = "/video/end_file";
 	};
 
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -50,11 +48,14 @@ $(document).ready(function(){
         <label for="filePicker">Choose or drag a file:</label><br>
         <input type="file" id="filePicker">
     </div>
+    <div>
+        <label for="filePicker">Choose or drag a file:</label><br>
+        <input type="file" id="filePicker">
+    </div>
     <br>
     <div>
         <h1>Base64 encoded version</h1>
         <textarea id="base64textarea" placeholder="Base64 will appear here" cols="50" rows="15"></textarea>
-        <video src="/uploads/5.mp4"/>
     </div>
 </div>
 </body>
