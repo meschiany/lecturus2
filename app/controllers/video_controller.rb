@@ -1,13 +1,16 @@
 class VideoController < MainController
 	
 	$test_file
-
+	$isFileStarted = false
 	def _setNewTempFile
-		$test_file = Tempfile.new(['video','.mp4'])
-		$test_file.binmode # note that the tempfile must be in binary mode
+		if !$isFileStarted
+			$test_file = Tempfile.new(['video','.mp4'])
+			$test_file.binmode # note that the tempfile must be in binary mode
+			$isFileStarted = true
+		end
 	end
 
-	def _closeAndUpload()
+	def _closeAndUpload(vidId)
 		$test_file.rewind
 		$test_file
 		VideoUploader.new.upload_video_to_s3($test_file, vidId.to_s+'.mp4')
@@ -49,6 +52,7 @@ class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
+			_setNewTempFile
 			content = params[:video].read
 			$test_file.write content
 			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 

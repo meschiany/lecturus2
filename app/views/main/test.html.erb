@@ -4,34 +4,42 @@
 
 
 $(document).ready(function(){
-	var f = true;
-	var url = "/video/_write_to_local";
+	$("input[type='button']").click(function(){
+		
+		$.ajax({
+			type: "GET",
+		    url: "/video/end?id=222&index=132&length=22&user_id=2&active:true&token=a7556a56429952c671bb915023d7fb24bf84aa66",
+		    contentType: false,
+		    processData: false
+		});
+	});
 
+
+	var f = true;
 	var handleFileSelect = function(evt) {
 	    var files = evt.target.files;
 	    var file = files[0];
 
 	    var formData = new FormData();
-		formData.append('section', 'general');
+	    formData.append('section', 'general');
 		formData.append('action', 'previewImg');
 		formData.append('video', file);
-		formData.append('token', '36135354e814aae0bc84fad5ea83ebbb9816a151')
+		formData.append('token', 'a7556a56429952c671bb915023d7fb24bf84aa66')
 		formData.append('id',222);
 		formData.append('index',132);
-		formData.append('second',22);
+		formData.append('length',22);
 		formData.append('user_id',2);
 		formData.append('active',true);
 		formData.append('description',"Description");
 		formData.append('file_type','mp4');
 
 		$.ajax({
-			type: 'POST',
-		    url: url,
+			type: "POST",
+		    url: "/video/upload",
 		    data: formData,
 		    contentType: false,
 		    processData: false
 		});
-		url = "/video/end_file";
 	};
 
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -50,8 +58,7 @@ $(document).ready(function(){
         <input type="file" id="filePicker">
     </div>
     <div>
-        <label for="filePicker">Choose or drag a file:</label><br>
-        <input type="file" id="filePicker">
+        <input type="button" value="end"></input>
     </div>
     <br>
     <div>
