@@ -20,9 +20,13 @@ class MainController < ApplicationController
     return nil
   end
 
-  def validateFilters(params, className)
+  def validateFilters(params, className, get_all)
     json = nil
-    keys = params["filters"].keys
+    if get_all
+      keys=[]
+    else
+      keys = params["filters"].keys
+    end
     keys.each.with_index(0) do |item,i|
       if (!"#{className}".constantize.column_names.include? keys[i])
         json = _getJson("failed", {}, "can not filter by #{keys[i]}")
@@ -78,10 +82,18 @@ class MainController < ApplicationController
       posts = "#{className}".constantize.all
       json = _getJson("success", posts, "get all")
     else
-      json = validateFilters(params,"Post")
+      get_all = false
+      if params["filters"].nil?
+        get_all = true
+      end
+      json = validateFilters(params,"Post", get_all)
       if json.nil?
-        keys = params["filters"].keys
-        values = params["filters"].values
+        keys = []
+        values = []
+        if !get_all
+          keys = params["filters"].keys
+          values = params["filters"].values
+        end
         query = ""
         if (keys.length)
           query = query + "#{keys[0]}= #{values[0]}"
@@ -91,8 +103,15 @@ class MainController < ApplicationController
             end 
           end
         end
-        posts = "#{className}".constantize.where(query)
-        json = _getJson("success", posts, "get by "+keys[0]+"="+values[0])
+        
+        if get_all 
+          posts = "#{className}".constantize.all
+          str = "get all"
+        else
+          posts = "#{className}".constantize.where(query)
+          str = "get by "+keys[0]+"="+values[0]
+        end
+        json = _getJson("success", posts, str)
       end
     end
     return json
