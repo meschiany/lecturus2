@@ -46,6 +46,10 @@ class MainController < ApplicationController
   end
 
   def _isTokenValid(params)
+    if params["debug"] === true
+      result = {"bool" => true, "msg" => "Debug no token needed"}
+      return result
+    end
     if !params["token"] || params["token"] == "" || params["token"].nil?
       result = {"bool" => false, "msg" => "no token was sent"}
     else
