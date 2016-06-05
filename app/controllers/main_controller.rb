@@ -46,8 +46,6 @@ class MainController < ApplicationController
   end
 
   def _isTokenValid(params)
-    puts "---- here"
-    puts params["debug"]
     if params["debug"] == "true"
       result = {"bool" => true, "msg" => "Debug no token needed"}
       return result
@@ -127,6 +125,10 @@ class MainController < ApplicationController
     tokenValid = _isTokenValid(params)
     if (tokenValid['bool'] || !should_validate)
       json = validateParams(params,localParams)
+      puts params.class
+      if params.has_key?(:debug)
+        params.delete("debug")
+      end
       if json.nil?
         
         values = params.values
@@ -137,6 +139,7 @@ class MainController < ApplicationController
         if (localParams.length > 1)
             localParams[1..-1].each.with_index(1) do |item,i|
               record[keys[i]] = values[i]
+              puts record[keys[i]]
               data.store(keys[i], values[i])
             end 
         end
