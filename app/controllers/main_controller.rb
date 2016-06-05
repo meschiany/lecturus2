@@ -46,7 +46,9 @@ class MainController < ApplicationController
   end
 
   def _isTokenValid(params)
-    if params["debug"] === true
+    puts "---- here"
+    puts params["debug"]
+    if params["debug"] == "true"
       result = {"bool" => true, "msg" => "Debug no token needed"}
       return result
     end
