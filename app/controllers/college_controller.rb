@@ -2,7 +2,7 @@ class CollegeController < MainController
 	
 	def new
 		localParams = ["name"]
-		result = setNew("#{params['controller']}".camelize, params, localParams)
+		result = setNew("#{params['controller']}".camelize, params, localParams,false)
 		render result
 	end
 
