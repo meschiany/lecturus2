@@ -42,7 +42,7 @@ class VideoController < MainController
 		else
 			user = user[0]
 			params.store(:master_id, user[:id])
-			localParams = ["title", "course_id", "class", "master_id", "status", "start_record_timestamp"]
+			localParams = ["title", "course_id", "master_id", "status", "start_record_timestamp"]
 			result = setNew("#{params['controller']}".camelize, params, localParams)
 			if result["bool"]
 				_setNewTempFile()
