@@ -63,6 +63,15 @@ class MainController < ApplicationController
     return result
   end
 
+  def _getUserByToken(params)
+    user = User.where("token='#{params['token']}'")
+    if user.size>0
+      return user
+    else  
+      return nil
+    end
+  end
+
   def show()
     tokenValid = _isTokenValid(params)
     if tokenValid["bool"]
@@ -125,7 +134,6 @@ class MainController < ApplicationController
     tokenValid = _isTokenValid(params)
     if (tokenValid['bool'] || !should_validate)
       json = validateParams(params,localParams)
-      puts params.class
       if params.has_key?(:debug)
         params.delete("debug")
       end

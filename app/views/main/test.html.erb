@@ -8,7 +8,7 @@ $(document).ready(function(){
 		
 		$.ajax({
 			type: "GET",
-		    url: "/video/end?id=222&index=132&length=22&user_id=2&active:true&token=a7556a56429952c671bb915023d7fb24bf84aa66",
+		    url: "/video/end?id=222&index=132&length=22&user_id=2&active:true&token=a7556a56429952c671bb915023d7fb24bf84aa66&debug=true",
 		    contentType: false,
 		    processData: false
 		});
@@ -25,7 +25,7 @@ $(document).ready(function(){
 		formData.append('action', 'previewImg');
 		formData.append('video', file);
 		formData.append('token', 'a7556a56429952c671bb915023d7fb24bf84aa66')
-		formData.append('id',222);
+		formData.append('id',1);
 		formData.append('index',132);
 		formData.append('length',22);
 		formData.append('user_id',2);
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
 		$.ajax({
 			type: "POST",
-		    url: "/video/upload",
+		    url: "/video/upload?debug=true",
 		    data: formData,
 		    contentType: false,
 		    processData: false

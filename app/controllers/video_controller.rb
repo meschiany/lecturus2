@@ -26,18 +26,28 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
-			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+vid+".mp4"
+			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+vidId.to_s+".mp4"
 		}
 	end
 
 
 	def new
-		_setNewTempFile()
 
 		params.store(:status, "#$STATUS_REC")
 		params.store(:start_record_timestamp, "#{Time.now.getutc}")
-		localParams = ["title", "master_id", "course_id","token", "class", "status", "start_record_timestamp"]
-		result = setNew("#{params['controller']}".camelize, params, localParams)
+		user = _getUserByToken(params)
+		if user.nil?
+			json = _getJson("failed", {}, 'no user with this token')
+    		result = {:json => json, :status => :not_found}
+		else
+			user = user[0]
+			params.store(:master_id, user[:id])
+			localParams = ["title", "course_id", "class", "master_id", "status", "start_record_timestamp"]
+			result = setNew("#{params['controller']}".camelize, params, localParams)
+			if result["bool"]
+				_setNewTempFile()
+			end
+		end
       	render result
 	end
 
