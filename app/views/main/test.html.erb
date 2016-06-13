@@ -4,13 +4,30 @@
 
 
 $(document).ready(function(){
-	$("input[type='button']").click(function(){
+	var vid;
+	var ind = 0;
+	$("input[value='new']").click(function(){
 		
 		$.ajax({
 			type: "GET",
-		    url: "/video/end?id=222&index=132&length=22&user_id=2&active:true&token=a7556a56429952c671bb915023d7fb24bf84aa66&debug=true",
+		    url: "/video/new?debug=true&title=asd&course_id=1",
 		    contentType: false,
 		    processData: false
+		}).done(function(data){
+			console.log(data);
+			vid = data;
+		});
+	});
+
+	$("input[value='end']").click(function(){
+		
+		$.ajax({
+			type: "GET",
+		    url: "/video/end?id="+vid.data.id+"&length=22&debug=true",
+		    contentType: false,
+		    processData: false
+		}).done(function(data){
+			console.log(data);
 		});
 	});
 
@@ -21,14 +38,9 @@ $(document).ready(function(){
 	    var file = files[0];
 
 	    var formData = new FormData();
-	    formData.append('section', 'general');
-		formData.append('action', 'previewImg');
 		formData.append('video', file);
-		formData.append('token', 'a7556a56429952c671bb915023d7fb24bf84aa66')
-		formData.append('id',1);
-		formData.append('index',132);
-		formData.append('length',22);
-		formData.append('user_id',2);
+		formData.append('id',vid.data.id);
+		formData.append('index',ind);
 		formData.append('active',true);
 		formData.append('description',"Description");
 		formData.append('file_type','mp4');
@@ -39,6 +51,9 @@ $(document).ready(function(){
 		    data: formData,
 		    contentType: false,
 		    processData: false
+		}).done(function(data){
+			console.log(data);
+			ind++;
 		});
 	};
 
@@ -53,6 +68,9 @@ $(document).ready(function(){
 </script>
 <body>
 	<div>
+    <div>
+        <input type="button" value="new"></input>
+    </div>
     <div>
         <label for="filePicker">Choose or drag a file:</label><br>
         <input type="file" id="filePicker">

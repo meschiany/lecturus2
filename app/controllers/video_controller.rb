@@ -1,19 +1,30 @@
 class VideoController < MainController
 	
 	$test_file
-	$isFileStarted = false
+	def get()
+	    tokenValid = _isTokenValid(params)
+	    if tokenValid['bool']
+	      user = _getUserByToken(params);
+	      params.store(:'filters', {:master_id => user.id});
+	      json = _getData("#{params['controller']}".camelize, params)
+	      result = {:json => json, :status => :ok}      
+	    else
+	      json = _getJson("failed", {}, tokenValid['msg'])
+	      result = {:json => json, :status => :not_found}
+	    end
+	    render result
+	end
+
 	def _setNewTempFile
-		if !$isFileStarted
-			$test_file = Tempfile.new(['video','.mp4'])
-			$test_file.binmode # note that the tempfile must be in binary mode
-			$isFileStarted = true
-		end
+		file = File.new(Rails.root.join('app/assets/uploads/video'+params[:id].to_s+'.mp4'), 'ab')
+		file.binmode # note that the tempfile must be in binary mode
 	end
 
 	def _closeAndUpload(vidId)
-		$test_file.rewind
-		$test_file
-		VideoUploader.new.upload_video_to_s3($test_file, vidId.to_s+'.mp4')
+		file = File.open(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), 'r')
+		file.rewind
+		VideoUploader.new.upload_video_to_s3(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), "video"+vidId.to_s+'.mp4')
+		File.unlink(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'))
 	end
 
 	def _updateVideoRecord(vidId, length)
@@ -32,15 +43,16 @@ class VideoController < MainController
 
 
 	def new
-
 		params.store(:status, "#$STATUS_REC")
 		params.store(:start_record_timestamp, "#{Time.now.getutc}")
 		user = _getUserByToken(params)
+		if params["debug"] == "true"
+			user = User.first
+		end
 		if user.nil?
 			json = _getJson("failed", {}, 'no user with this token')
     		result = {:json => json, :status => :not_found}
 		else
-			user = user[0]
 			params.store(:master_id, user[:id])
 			localParams = ["title", "course_id", "master_id", "status", "start_record_timestamp"]
 			result = setNew("#{params['controller']}".camelize, params, localParams)
@@ -62,10 +74,13 @@ class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
-			_setNewTempFile
 			content = params[:video].read
-			$test_file.write content
-			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
+			# $test_file.write content
+			# file = File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
+			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'ab') do |f| 
+				f.write(content) 
+			end
+			File.open(Rails.root.join('app/assets/uploads/video'+params[:id].to_s+'.mp4'), 'ab') do |f| 
 				f.write(content) 
 			end
 

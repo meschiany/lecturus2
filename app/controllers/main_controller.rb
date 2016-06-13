@@ -64,9 +64,9 @@ class MainController < ApplicationController
   end
 
   def _getUserByToken(params)
-    user = User.where("token='#{params['token']}'")
+    user = User.where("token='#{params["token"]}'")
     if user.size>0
-      return user
+      return user.first
     else  
       return nil
     end
@@ -94,39 +94,44 @@ class MainController < ApplicationController
     if params.length <= 2
       posts = "#{className}".constantize.all
       json = _getJson("success", posts, "get all")
-    else
-      get_all = false
-      if params["filters"].nil?
-        get_all = true
-      end
-      json = validateFilters(params,"Post", get_all)
-      if json.nil?
-        keys = []
-        values = []
-        if !get_all
-          keys = params["filters"].keys
-          values = params["filters"].values
-        end
-        query = ""
-        if (keys.length)
-          query = query + "#{keys[0]}= #{values[0]}"
-          if (keys.length > 1)
-            keys[1..-1].each.with_index(1) do |item,i|
-              query = query + " AND #{keys[i]}= #{values[i]}"
-            end 
-          end
-        end
-        
-        if get_all 
-          posts = "#{className}".constantize.all
-          str = "get all"
-        else
-          posts = "#{className}".constantize.where(query)
-          str = "get by "+keys[0]+"="+values[0]
-        end
-        json = _getJson("success", posts, str)
+      return json
+    end
+
+    get_all = false
+    if params["filters"].nil?
+      get_all = true
+    end
+
+    json = validateFilters(params,"#{className}".constantize, get_all)
+    if !json.nil?
+      return json
+    end
+  
+    keys = []
+    values = []
+    if !get_all
+      keys = params["filters"].keys
+      values = params["filters"].values
+    end
+    query = ""
+    if (keys.length)
+      query = query + "#{keys[0]}= #{values[0]}"
+      if (keys.length > 1)
+        keys[1..-1].each.with_index(1) do |item,i|
+          query = query + " AND #{keys[i]}= #{values[i]}"
+        end 
       end
     end
+    
+    if get_all 
+      posts = "#{className}".constantize.all
+      str = "get all"
+    else
+      posts = "#{className}".constantize.where(query)
+      str = "get by "+keys[0]+"="+values[0].to_s
+    end
+    json = _getJson("success", posts, str)
+  
     return json
   end
 
