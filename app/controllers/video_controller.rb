@@ -20,11 +20,16 @@ class VideoController < MainController
 		file.binmode # note that the tempfile must be in binary mode
 	end
 
-	def _closeAndUpload(vidId)
-		file = File.open(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), 'r')
+	def _closeAndUpload(vidId,parts)
+		file = File.open(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), 'wb')
+		puts parts
+		for i in 0..(parts.to_i-1)
+   			temp = File.open(Rails.root.join('app/assets/uploads/'+vidId.to_s+"_"+i.to_s), 'r')	
+   			file.write(temp.read)
+		end
 		file.rewind
 		VideoUploader.new.upload_video_to_s3(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), "video"+vidId.to_s+'.mp4')
-		File.unlink(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'))
+		# File.unlink(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'))
 	end
 
 	def _updateVideoRecord(vidId, length)
@@ -37,8 +42,18 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
-			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/"+vidId.to_s+".mp4"
+			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/video"+vidId.to_s+".mp4"
 		}
+	end
+
+	def rewrite()
+		file = File.open(Rails.root.join('app/assets/uploads/video'+params[:id].to_s+'.mp4'), 'wb')
+		file.rewind
+		content = params[:video].read
+		file.write(content) 
+		json = _getJson("success", {"videoId" => params[:id], "index" => params[:index]}, "upload")
+		result = {:json => json, :status => :ok}
+		return result
 	end
 
 
@@ -65,7 +80,7 @@ class VideoController < MainController
 
 	def _write_to_local
 		content = params[:video].read
-		File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
+		File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'ab') do |f| 
 			f.write(content) 
 		end
 		head :ok
@@ -75,12 +90,7 @@ class VideoController < MainController
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
 			content = params[:video].read
-			# $test_file.write content
-			# file = File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
-			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'ab') do |f| 
-				f.write(content) 
-			end
-			File.open(Rails.root.join('app/assets/uploads/video'+params[:id].to_s+'.mp4'), 'ab') do |f| 
+			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
 				f.write(content) 
 			end
 
@@ -100,7 +110,7 @@ class VideoController < MainController
 			json = validateParams(params, ["id", "length"])
 			if json.nil?
 
-				_closeAndUpload(params[:id].to_s)
+				_closeAndUpload(params[:id].to_s,params[:parts])
 
 				data = _updateVideoRecord(params[:id],params[:length])
 				json = _getJson("success", data, "updated")

@@ -27,6 +27,7 @@ Myapp::Application.routes.draw do
       post '_write_to_local'
       get 'end'
       get 'get'
+      post 'rewrite'
     end
   end
 
