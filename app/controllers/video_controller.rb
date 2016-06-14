@@ -21,14 +21,13 @@ class VideoController < MainController
 	end
 
 	def _closeAndUpload(vidId,parts)
-		file = File.open(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), 'wb')
-		puts parts
+		file = File.open(Rails.root.join('public', 'uploads/video'+vidId.to_s+'.mp4'), 'wb')
 		for i in 0..(parts.to_i-1)
    			temp = File.open(Rails.root.join('app/assets/uploads/'+vidId.to_s+"_"+i.to_s), 'r')	
    			file.write(temp.read)
 		end
 		file.rewind
-		VideoUploader.new.upload_video_to_s3(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), "video"+vidId.to_s+'.mp4')
+		# VideoUploader.new.upload_video_to_s3(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'), "video"+vidId.to_s+'.mp4')
 		# File.unlink(Rails.root.join('app/assets/uploads/video'+vidId.to_s+'.mp4'))
 	end
 
@@ -42,7 +41,7 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
-			"videoUrl" => "https://s3-ap-southeast-1.amazonaws.com/lecturus/videos/video"+vidId.to_s+".mp4"
+			"videoUrl" => "http://52.23.174.169:3000/uploads/video"+vidId.to_s+".mp4"
 		}
 	end
 
