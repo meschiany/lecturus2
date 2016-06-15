@@ -46,6 +46,7 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
+      get 'updater'
       get 'get'
       get 'deactivate'
     end

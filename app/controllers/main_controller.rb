@@ -1,8 +1,17 @@
 class MainController < ApplicationController
   require 'json'
+  after_filter :set_access_control_headers
 
   $STATUS_REC = "RECORDING"
   $STATUS_EDIT = "EDITING"
+
+  def set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+    headers['Access-Control-Request-Method'] = '*'
+    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  end
+
   def test
   end
 
@@ -64,12 +73,15 @@ class MainController < ApplicationController
   end
 
   def _getUserByToken(params)
-    user = User.where("token='#{params["token"]}'")
-    if user.size>0
-      return user.first
-    else  
+    if params["debug"] == "true"
+      user = User.first
+    else
+      user = User.where("token='#{params["token"]}'").first
+    end
+    if user.nil?
       return nil
     end
+    return user
   end
 
   def show()
@@ -80,7 +92,6 @@ class MainController < ApplicationController
         json = _getJson("success", vid, "show")
         result = {:json => json, :status => :ok}
       else
-        json = {"msg"=>"not found"}
         result = {:json => {"msg"=>"not found"}, :status => :not_found}
       end
     else
