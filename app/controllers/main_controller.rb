@@ -126,7 +126,7 @@ class MainController < ApplicationController
     end
     query = ""
     if (keys.length)
-      query = query + "#{keys[0]}= #{values[0]}"
+      query = query + "#{keys[0]}='#{values[0]}'"
       if (keys.length > 1)
         keys[1..-1].each.with_index(1) do |item,i|
           query = query + " AND #{keys[i]}= #{values[i]}"
