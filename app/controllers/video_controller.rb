@@ -21,7 +21,8 @@ class VideoController < MainController
 	end
 
 	def _closeAndUpload(vidId,parts)
-		file = File.open(Rails.root.join('public', 'uploads/video'+vidId.to_s+'.mp4'), 'wb')
+		file = File.open(Rails.root.join('public','uploads/videos/video'+vidId.to_s+'.mp4'), 'wb')
+
 		for i in 0..(parts.to_i-1)
    			temp = File.open(Rails.root.join('app/assets/uploads/'+vidId.to_s+"_"+i.to_s), 'r')	
    			file.write(temp.read)
@@ -41,7 +42,11 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
+<<<<<<< Updated upstream
 			"videoUrl" => "http://52.23.174.169:3000/uploads/video"+vidId.to_s+".mp4"
+=======
+			"videoUrl" => "http://52.23.174.169:3000/uploads/videos/video"+vidId.to_s+".mp4"
+>>>>>>> Stashed changes
 		}
 	end
 
