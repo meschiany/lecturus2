@@ -42,11 +42,7 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
-<<<<<<< Updated upstream
-			"videoUrl" => "http://52.23.174.169:3000/uploads/video"+vidId.to_s+".mp4"
-=======
 			"videoUrl" => "http://52.23.174.169:3000/uploads/videos/video"+vidId.to_s+".mp4"
->>>>>>> Stashed changes
 		}
 	end
 
