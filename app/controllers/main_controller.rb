@@ -153,6 +153,9 @@ class MainController < ApplicationController
       if params.has_key?(:debug)
         params.delete("debug")
       end
+      if params.has_key?(:token) && (params[:token]== "" || params[:token].nil?)
+        params.delete("token")
+      end
       if json.nil?
         
         values = params.values

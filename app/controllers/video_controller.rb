@@ -61,7 +61,7 @@ class VideoController < MainController
 	def new
 		# params.store(:status, "#$STATUS_REC")
 		params.store("status", "RECORDING")
-		params.store("start_record_timestamp", "#{Time.now.getutc}")
+		params.store("start_record_timestamp", Time.now.getutc.to_s)
 		user = _getUserByToken(params)
 		if params["debug"] == "true"
 			user = User.first
@@ -70,7 +70,7 @@ class VideoController < MainController
 			json = _getJson("failed", {}, 'no user with this token')
     		result = {:json => json, :status => :not_found}
 		else
-			params.store(:master_id, user[:id])
+			params.store("master_id", user[:id])
 			localParams = ["title", "course_id", "master_id", "status", "start_record_timestamp"]
 			result = setNew("#{params['controller']}".camelize, params, localParams)
 			if result["bool"]
