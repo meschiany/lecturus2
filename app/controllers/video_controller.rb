@@ -59,8 +59,9 @@ class VideoController < MainController
 
 
 	def new
-		params.store(:status, "#$STATUS_REC")
-		params.store(:start_record_timestamp, "#{Time.now.getutc}")
+		# params.store(:status, "#$STATUS_REC")
+		params.store("status", "RECORDING")
+		params.store("start_record_timestamp", "#{Time.now.getutc}")
 		user = _getUserByToken(params)
 		if params["debug"] == "true"
 			user = User.first
