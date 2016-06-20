@@ -1,14 +1,16 @@
 class VideoController < MainController
 	
 	$test_file
-	def get()
+	def get
 	    tokenValid = _isTokenValid(params)
 	    if params[:debug] == "true"
 	    	json = _getData("#{params['controller']}".camelize, params)
 	      	result = {:json => json, :status => :ok}      
 	    elsif _isTokenValid(params)
 	      user = _getUserByToken(params);
-	      params.store(:'filters', {:master_id => user.id});
+	      params.store('filters', {:master_id => user.id});
+	      json = _getData("#{params['controller']}".camelize, params)
+	      result ={:json=>json,:status => :ok}
 	    else
 	      json = _getJson("failed", {}, tokenValid['msg'])
 	      result = {:json => json, :status => :not_found}

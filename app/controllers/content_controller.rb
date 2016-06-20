@@ -5,8 +5,9 @@ class ContentController < MainController
 		if tokenValid['bool']
 			json = validateParams(params, ["id"])
 			if json.nil?
-				content = "#{params['controller']}".camelize.constantize.where("id=#{params[id]}")
-				content.update_attribute(:active, false)
+				content = "#{params['controller']}".camelize.constantize.find(params[:id])
+				content.active = false
+				content.save
 				json = _getJson("success", params, "updated")
 				result = {:json => json, :status => :ok}
 			else
