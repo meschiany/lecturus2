@@ -7,10 +7,11 @@ class TextController < ContentController
 			json = _getJson("failed", {}, 'no user with this token')
     		result = {:json => json, :status => :not_found}
 		else
-			params.store(:user_id, user[:id])
-			params.store(:active, "true")
+			params.store("user_id", user["id"])
+			params.store("active", "true")
+			params.store("content_type", "text")
 			localParams = ["video_id", "second", "active", "content", "user_id"]
-      		result = setNew("#{params['controller']}".camelize, params, localParams)
+      		result = setNew("Post", params, localParams)
 		end
 		render result;
 
@@ -21,7 +22,6 @@ class TextController < ContentController
 #  all as links and maybe seperate the api calls
 # swich on all params and update each one at a time
 	def _updateTextContent(params)
-		puts 6
 		txt = Text.find(params[:id])
 		txt.second = params[:second]
 		txt.active = params[:active]
@@ -41,8 +41,7 @@ class TextController < ContentController
     		result = {:json => json, :status => :not_found}
 		else
 			params.store(:user_id, user[:id])
-			params.store(:active, "true")
-			localParams = ["id", "second", "active", "content", "user_id"]
+			localParams = ["id", "second", "content", "user_id"]
 			json = validateParams(params, localParams)
 			if json.nil?
 				result = {:json => _updateTextContent(params), :status => :ok}
@@ -52,6 +51,13 @@ class TextController < ContentController
 		end
 		render result;
 
+	end
+
+	def get
+		a = params["filters"]
+		a.store("active","t")
+		params.store("filters",a);
+		super
 	end
 
 end

@@ -117,28 +117,20 @@ class MainController < ApplicationController
     if !json.nil?
       return json
     end
-  
+
     keys = []
     values = []
     if !get_all
       keys = params["filters"].keys
       values = params["filters"].values
     end
-    query = ""
-    if (keys.length)
-      query = query + "#{keys[0]}='#{values[0]}'"
-      if (keys.length > 1)
-        keys[1..-1].each.with_index(1) do |item,i|
-          query = query + " AND #{keys[i]}= #{values[i]}"
-        end 
-      end
-    end
-    
+
+    b = "#{params['filters'].map { |k, v| "#{k}='#{v}'" }.join(' AND ')}"
     if get_all 
       posts = "#{className}".constantize.all
       str = "get all"
     else
-      posts = "#{className}".constantize.where(query)
+      posts = "#{className}".constantize.where(b)
       str = "get by "+keys[0]+"="+values[0].to_s
     end
     json = _getJson("success", posts, str)
@@ -146,6 +138,8 @@ class MainController < ApplicationController
     return json
   end
 
+
+# TODO rearange the order by name and not by location
   def setNew(className, params, localParams, should_validate=true)
     tokenValid = _isTokenValid(params)
     if (tokenValid['bool'] || !should_validate)
@@ -157,22 +151,17 @@ class MainController < ApplicationController
         params.delete("token")
       end
       if json.nil?
-        
-        values = params.values
+
         keys = params.keys
         record = className.constantize.new
-        record[keys[0]] = values[0]
-        data = {localParams[0] => values[0]}
-        if (localParams.length > 1)
-            localParams[1..-1].each.with_index(1) do |item,i|
-              record[keys[i]] = values[i]
-              puts record[keys[i]]
-              data.store(keys[i], values[i])
-            end 
-        end
+        keys.each { |key| 
+          if className.constantize.column_names.include? key
+            record[key] = params[key]
+          end
+        }
         record.save
-        data.store(:id, record.id)
-        json = _getJson("success", data, "saved")
+        # data.store(:id, record.id)
+        json = _getJson("success", record, "saved")
         result = {:json => json, :status => :ok}
       else
         result = {:json => json, :status => :not_found}
@@ -188,6 +177,7 @@ class MainController < ApplicationController
     tokenValid = _isTokenValid(params)
     if tokenValid['bool']
       json = _getData("#{params['controller']}".camelize, params)
+      puts json
       result = {:json => json, :status => :ok}      
     else
       json = _getJson("failed", {}, tokenValid['msg'])

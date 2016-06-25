@@ -35,10 +35,13 @@ Myapp::Application.routes.draw do
     collection do
       get 'show'
       get 'new'
+      post 'new_file'
       get 'get'
       get 'deactivate'
       get 'upload'
+      get 'updater'
       post 'upload'
+      post 'upload_file'
     end
   end
 
@@ -77,6 +80,12 @@ Myapp::Application.routes.draw do
       get 'auth'
       get 'login'
       get 'logout'
+    end
+  end
+  
+  resources :content do
+    collection do
+      get 'get_content'
     end
   end
 

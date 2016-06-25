@@ -32,4 +32,36 @@ class ContentController < MainController
       	return result
 	end
 
+	def get_content
+		# result = {:json => {}, :status => :not_found}
+		# render result
+		tokenValid = _isTokenValid(params)
+		if tokenValid['bool']
+			json = validateParams(params, ["filters"])
+			if json.nil?
+				content = []
+				a = params["filters"]
+				a.store("active","t")
+				params.store("filters",a)
+
+
+				texts = _getData("Text", params)
+				# texts["data"].each {|item| item[:c_type] = "text"}
+				
+				posts = _getData("Post", params)
+				# posts["data"].each {|item| item[:c_type] = "post"}
+				
+				content.push(*texts["data"])
+				content.push(*posts["data"])
+				json = _getJson("success", content, "updated")
+				result = {:json => json, :status => :ok}
+			end
+		else
+			json = _getJson("failed", {}, tokenValid['msg'])
+      		result = {:json => json, :status => :not_found}
+		end
+		render result
+	end
+
+
 end

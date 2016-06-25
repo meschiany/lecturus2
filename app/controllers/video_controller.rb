@@ -93,6 +93,7 @@ class VideoController < MainController
 	def upload
 		tokenValid = _isTokenValid(params)
 		if tokenValid['bool']
+			puts params[:video].original_filename
 			content = params[:video].read
 			File.open(Rails.root.join('app/assets/uploads/'+params[:id].to_s+"_"+params[:index].to_s), 'wb') do |f| 
 				f.write(content) 
