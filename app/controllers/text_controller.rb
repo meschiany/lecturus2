@@ -17,10 +17,29 @@ class TextController < ContentController
 
 	end
 
-# TODO finish update (for everything but now test the change in second and update gui)
-# later add update btn for the content itself delete btn and deactivate btm
-#  all as links and maybe seperate the api calls
-# swich on all params and update each one at a time
+	# contributor put text by timestamp
+	def put_text
+		# check token
+		user = _getUserByToken(params)
+		if user.nil?
+			json = _getJson("failed", {}, 'no user with this token')
+    		result = {:json => json, :status => :not_found}
+		else
+			vid = Video.find(params[:video_id])
+			second = Time.now.getutc - vid.start_record_timestamp
+
+			params.store("user_id", user["id"])
+			params.store("active", "true")
+			params.store("content_type", "text")
+			params.store("second", second)
+			
+			localParams = ["video_id", "second", "content"]
+      		result = setNew("Post", params, localParams)
+		end
+		render result;
+
+	end
+
 	def _updateTextContent(params)
 		txt = Text.find(params[:id])
 		txt.second = params[:second]

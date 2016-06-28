@@ -42,6 +42,7 @@ Myapp::Application.routes.draw do
       get 'updater'
       post 'upload'
       post 'upload_file'
+      post 'put_file'
     end
   end
 
@@ -52,6 +53,7 @@ Myapp::Application.routes.draw do
       get 'updater'
       get 'get'
       get 'deactivate'
+      get 'put_text'
     end
   end
 

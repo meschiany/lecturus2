@@ -2,7 +2,6 @@ class PostController < ContentController
 require 'fileutils'
 	def new_file
 		# check token
-		puts params
 		user = _getUserByToken(params)
 		if user.nil?
 			json = _getJson("failed", {}, 'no user with this token')
@@ -16,20 +15,45 @@ require 'fileutils'
 			localParams = ["content", "video_id", "second", "user_id"]
       		result = setNew("#{params['controller']}".camelize, params, localParams)
       		content = params[:file].read
-			FileUtils.mkdir_p('app/assets/uploads/'+params[:video_id].to_s)
-      		# TODO put it elsewhere because create video will need it as well
-
-      		File.open(Rails.root.join('app/assets/uploads/'+params[:video_id].to_s+'/'+file_name), 'wb') do |f| 
+      		id = params[:video_id].to_s
+      		File.open(Rails.root.join('public','uploads/vits/'+id+'/files/'+file_name), 'wb') do |f| 
 				f.write(content) 
 			end
 		end
 		render result
+	end
 
+	# contributor put file by timestamp
+	def put_file
+		user = _getUserByToken(params)
+		if user.nil?
+			json = _getJson("failed", {}, 'no user with this token')
+    		result = {:json => json, :status => :not_found}
+		else
+			file_name = params[:file].original_filename
+
+			vid = Video.find(params[:video_id])
+			second = Time.now.getutc - vid.start_record_timestamp
+
+			params.store("content", file_name)
+			params.store("user_id", user["id"])
+			params.store("active", "true")
+			params.store("content_type", "file")
+			params.store("second", second)
+
+			localParams = ["content", "video_id"]
+      		result = setNew("#{params['controller']}".camelize, params, localParams)
+      		content = params[:file].read
+      		id = params[:video_id].to_s
+      		File.open(Rails.root.join('public','uploads/vits/'+id+'/files/'+file_name), 'wb') do |f| 
+				f.write(content) 
+			end
+		end
+		render result
 	end
 
 	def upload_file
 		# check token
-		puts "-=-=-=-=-=-=-"
 		user = _getUserByToken(params)
 		if user.nil?
 			json = _getJson("failed", {}, 'no user with this token')
@@ -37,12 +61,12 @@ require 'fileutils'
 		else
 			file_name = params[:file].original_filename
 			content = params[:file].read
-			puts file_name
-			puts params[:video_id].to_s
-      		File.open(Rails.root.join('app/assets/uploads/'+params[:video_id].to_s+'/'+file_name), 'wb') do |f| 
+			
+
+			id = params[:video_id].to_s
+			File.open(Rails.root.join('public','uploads/vits/'+id+'/files/'+file_name), 'wb') do |f| 
 				f.write(content) 
 			end
-			puts "-=-=-=-=-=-=-"
 			json = _getJson("success", {}, "file upload")
 			result = {:json => json, :status => :ok}
 		end
@@ -67,36 +91,36 @@ require 'fileutils'
 	def new_post(params)
 		render new_content(params, localParams)
 	end
-
-	def upload
+# s3 bucket
+	# def upload
 		
-		tokenValid = _isTokenValid(params)
-		if !tokenValid['bool']
-			json = _getJson("failed", {}, tokenValid['msg'])
-    		result = {:json => json, :status => :not_found}
+	# 	tokenValid = _isTokenValid(params)
+	# 	if !tokenValid['bool']
+	# 		json = _getJson("failed", {}, tokenValid['msg'])
+ #    		result = {:json => json, :status => :not_found}
 
-		end
+	# 	end
 		
-		localParams = ["video_id", "second", "user_id", "active"]
-		json = validateParams(params,localParams)
-		if json.nil?
-			new_post(params)
+	# 	localParams = ["video_id", "second", "user_id", "active"]
+	# 	json = validateParams(params,localParams)
+	# 	if json.nil?
+	# 		new_post(params)
 		
-			file_name = params[:image].original_filename
-			body = params[:image].read
-			file_type = params[:file_type]
-			address = "https://s3-ap-southeast-1.amazonaws.com/lecturus/images/"+params[:id].to_s+"/"+file_name
+	# 		file_name = params[:image].original_filename
+	# 		body = params[:image].read
+	# 		file_type = params[:file_type]
+	# 		address = "https://s3-ap-southeast-1.amazonaws.com/lecturus/images/"+params[:id].to_s+"/"+file_name
 
-			json = _getJson("success", {"fileUrl" => address}, "show")
-			video_temp_file = _write_to_file(body,file_type)
-			ImageUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+"/"+file_name)
-			post = Post.last
-			post.update_attribute(:address, address)
-			result = {:json => json, :status => :ok}
-		end
-		render result	
+	# 		json = _getJson("success", {"fileUrl" => address}, "show")
+	# 		video_temp_file = _write_to_file(body,file_type)
+	# 		ImageUploader.new.upload_video_to_s3(video_temp_file, params[:id].to_s+"/"+file_name)
+	# 		post = Post.last
+	# 		post.update_attribute(:address, address)
+	# 		result = {:json => json, :status => :ok}
+	# 	end
+	# 	render result	
 
-	end
+	# end
 
 	def _write_to_file(content,file_type)
 		thumbnail_file = Tempfile.new(['image',"."+file_type])
@@ -107,9 +131,9 @@ require 'fileutils'
 	end
 
 	def get
-		a = params["filters"]
-		a.store("active","t")
-		params.store("filters",a);
+		tmp = params["filters"]
+		tmp.store("active","t")
+		params.store("filters",tmp);
 		super
 	end
 
@@ -137,9 +161,6 @@ require 'fileutils'
 			localParams = ["id", "second", "content", "user_id"]
 			json = validateParams(params, localParams)
 			if json.nil?
-				puts "========="
-				puts params
-				puts "========="
 				result = {:json => _updateContent(params), :status => :ok}
 			else
 				result = {:json => json, :status => :not_found}
