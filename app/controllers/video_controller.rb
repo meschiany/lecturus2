@@ -1,5 +1,5 @@
 class VideoController < MainController
-	
+	require 'fileutils'
 	def get
 	    tokenValid = _isTokenValid(params)
 	    if params[:debug] == "true"
@@ -18,10 +18,10 @@ class VideoController < MainController
 	end
 
 	def setDirs
-		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/')
-		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s)			# public/uploads/vits/6/video6.mp4
-		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/files')	# public/uploads/vits/6/parts/6_44
-		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/parts')	# public/uploads/vits/6/files
+		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'))
+		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s))				# public/uploads/vits/6/video6.mp4
+		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/files'))	# public/uploads/vits/6/parts/6_44
+		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/parts'))	# public/uploads/vits/6/files
 	end
 
 	def _setNewTempFile

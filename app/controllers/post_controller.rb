@@ -1,5 +1,5 @@
 class PostController < ContentController
-require 'fileutils'
+
 	def new_file
 		# check token
 		user = _getUserByToken(params)

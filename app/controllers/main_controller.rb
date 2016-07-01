@@ -102,7 +102,7 @@ class MainController < ApplicationController
   end
 
   def _getData(className, params)
-    if params.length <= 2
+    if params.length <= 2 || (params.length == 3 && !params[:debug].nil? )
       posts = "#{className}".constantize.all
       json = _getJson("success", posts, "get all")
       return json

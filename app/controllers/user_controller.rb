@@ -17,10 +17,25 @@ require 'digest/sha1'
 
 	end
 
+	def checkExists(email)
+		result = nil
+		user = User.find_by_email(email)
+		if !user.nil?
+			json = _getJson("failed",{},"User already exists");
+			result={:json => json, :status => :ok}
+		end
+		return result
+	end
+
 	def new
+		result = checkExists(params[:email])
+		if !result.nil?
+			render result
+			return
+		end
+
 		localParams = ["email", "f_name", "l_name", "college_id", "password"]
 		result = setNew("#{params['controller']}".camelize, params, localParams, false)
-		
 		if (result[:status] === :ok)
 			params["token"] = "token";
 			params["link"] = "https://s3-ap-southeast-1.amazonaws.com/lecturus/VITClient.jar";
