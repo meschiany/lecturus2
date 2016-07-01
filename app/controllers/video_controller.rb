@@ -17,7 +17,8 @@ class VideoController < MainController
 	    render result
 	end
 
-	def setDirs
+	def setDirs(vidId)
+
 		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'))
 		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s))				# public/uploads/vits/6/video6.mp4
 		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/files'))	# public/uploads/vits/6/parts/6_44
@@ -71,9 +72,8 @@ class VideoController < MainController
 			params.store("master_id", user[:id])
 			localParams = ["title", "course_id", "master_id", "status"]
 			result = setNew("#{params['controller']}".camelize, params, localParams)
-
 			# create directories hirarchy
-			setDirs()
+			setDirs(result[:json]["data"].id)
 
 			# if result["bool"]
 				# _setNewTempFile()
