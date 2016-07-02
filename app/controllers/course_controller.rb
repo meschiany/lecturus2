@@ -15,7 +15,7 @@ class CourseController < MainController
     		courses.each_with_index do |course, i|
     			course.videos.each do |video|
     				# if video.status == "PUBLISHED"
-    				if video.status == "EDITING"
+    				if video.status == "PUBLISHED"
    						videos.push(video)
    					end
    				end

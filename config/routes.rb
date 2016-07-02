@@ -28,6 +28,7 @@ Myapp::Application.routes.draw do
       get 'end'
       get 'get'
       post 'rewrite'
+      get 'publish'
     end
   end
 

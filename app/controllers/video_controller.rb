@@ -138,4 +138,23 @@ class VideoController < MainController
     	render result
 	end
 
+	def publish
+		tokenValid = _isTokenValid(params)
+		if tokenValid['bool']
+			vid = Video.find_by_id(params[:id])
+			vid.status = "#$STATUS_PUB"
+			vid.save
+			result = {"video_id" => vid.id, 
+				"status" => vid.status, 
+				"videoUrl" => "http://54.149.212.63/vit/WebClientLecturus/app/pages/vitPlayer.html?videoId="+vid.id.to_s
+			}
+			json = _getJson("success", result, "published")
+			result = {:json => json, :status => :ok}
+		else
+			json = _getJson("failed", {}, tokenValid['msg'])
+      		result = {:json => json, :status => :not_found}
+		end
+      	render result
+	end
+
 end

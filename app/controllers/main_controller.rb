@@ -4,6 +4,7 @@ class MainController < ApplicationController
 
   $STATUS_REC = "RECORDING"
   $STATUS_EDIT = "EDITING"
+  $STATUS_PUB = "PUBLISHED"
 
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = '*'
