@@ -92,10 +92,13 @@ class VideoController < MainController
 	def updateStartRecordTime(params)
 		if (params[:index].to_i==0)
 			vid = Video.find(params[:id])
+			puts "=================="
 			if (vid.start_record_timestamp.nil?)
+				puts "------------------"
 				vid.start_record_timestamp = Time.now.getutc
 				vid.save
 			end
+			puts vid.start_record_timestamp
 		end
 	end
 
