@@ -133,9 +133,9 @@ class MainController < ApplicationController
       str = "get all"
     else
       if !orderParam.nil?
-        posts = "#{className}".constantize.where(b).order(orderParam+" ASC").order("created_at DESC")
+        posts = "#{className}".constantize.where(b).order(orderParam+" ASC")
       else
-        posts = "#{className}".constantize.where(b).order("created_at DESC")
+        posts = "#{className}".constantize.where(b)  
       end
       
       str = "get by "+keys[0]+"="+values[0].to_s
