@@ -55,7 +55,7 @@ class ContentController < MainController
 				content.push(*posts["data"])
 				content.each{|c|
 					if c.content_type == "file"
-						c.content = 'http://52.23.174.169:3000/uploads/vits/65/files/'+c.content
+						c.content = 'http://52.23.174.169:3000/uploads/vits/'+c.video_id+'/files/'+c.content
 					end
 				}
 				json = _getJson("success", content, "updated")
