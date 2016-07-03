@@ -37,12 +37,11 @@ require 'digest/sha1'
 		localParams = ["email", "f_name", "l_name", "college_id", "password"]
 		result = setNew("#{params['controller']}".camelize, params, localParams, false)
 		if (result[:status] === :ok)
-			params["token"] = "token";
 			params["link"] = "https://s3-ap-southeast-1.amazonaws.com/lecturus/VITClient.jar";
-    		json = _getJson("success",params,"login success");
-    		render :json => json, :status => :ok
+    		# json = _getJson("success",params,"login success");
+    		# render :json => json, :status => :ok
     		# Shlomi dont want auto login
-			# login(params["email"], params["password"])
+			login(params["email"], params["password"])
 		else
 			render result
 		end
