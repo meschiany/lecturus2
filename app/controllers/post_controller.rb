@@ -33,7 +33,7 @@ class PostController < ContentController
 			file_name = params[:file].original_filename
 
 			vid = Video.find(params[:video_id])
-			second = Time.now.getutc - vid.start_record_timestamp
+			second = (Time.now.getutc - vid.start_record_timestamp).to_i
 
 			params.store("content", file_name)
 			params.store("user_id", user["id"])
