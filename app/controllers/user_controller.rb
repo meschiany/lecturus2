@@ -62,7 +62,7 @@ require 'digest/sha1'
     				token = Digest::SHA1.hexdigest("#{params['email']}-#{Time.now.to_i}-#{rand}")
     				users[0].update_attributes(:token => token, :last_login_timestamp => Time.now)
     			else
-    				token user.token
+    				token=users[0].token
     			end
 				
     			params["token"] = token;
