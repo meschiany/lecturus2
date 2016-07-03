@@ -53,7 +53,7 @@ class VideoController < MainController
 			"end_record_timestamp" => vid.end_record_timestamp, 
 			"status" => vid.status, 
 			"length" => vid.length,
-			"videoUrl" => "http://54.149.212.63/vit/WebClientLecturus/app/pages/editVideo.html?videoId="+vidId.to_s
+			"videoUrl" => "http://54.149.212.63/vit/WebClientLecturus/app/#/editVideo/"+vidId.to_s
 		}
 	end
 
