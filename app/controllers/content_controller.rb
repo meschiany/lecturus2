@@ -53,6 +53,11 @@ class ContentController < MainController
 				
 				content.push(*texts["data"])
 				content.push(*posts["data"])
+				content.each{|c|
+					if c.content_type == "file"
+						c.content = Rails.root.join('public','uploads/vits/'+c.video_id.to_s+'/files/'+c.content).to_s
+					end
+				}
 				json = _getJson("success", content, "updated")
 				result = {:json => json, :status => :ok}
 			end
