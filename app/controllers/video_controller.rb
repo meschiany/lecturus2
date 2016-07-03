@@ -8,7 +8,7 @@ class VideoController < MainController
 	    elsif _isTokenValid(params)
 	      user = _getUserByToken(params);
 	      params.store('filters', {:master_id => user.id});
-	      json = _getData("#{params['controller']}".camelize, params)
+	      json = _getData("#{params['controller']}".camelize, params, "status")
 	      result ={:json=>json,:status => :ok}
 	    else
 	      json = _getJson("failed", {}, tokenValid['msg'])

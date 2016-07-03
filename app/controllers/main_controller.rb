@@ -102,7 +102,7 @@ class MainController < ApplicationController
     render result
   end
 
-  def _getData(className, params)
+  def _getData(className, params, orderParam=nil)
     if params.length <= 2 || (params.length == 3 && !params[:debug].nil? )
       posts = "#{className}".constantize.all
       json = _getJson("success", posts, "get all")
@@ -131,7 +131,12 @@ class MainController < ApplicationController
       posts = "#{className}".constantize.all
       str = "get all"
     else
-      posts = "#{className}".constantize.where(b)
+      if !orderParam.nil?
+        posts = "#{className}".constantize.where(b).order(orderParam+" ASC")
+      else
+        posts = "#{className}".constantize.where(b)  
+      end
+      
       str = "get by "+keys[0]+"="+values[0].to_s
     end
     json = _getJson("success", posts, str)
