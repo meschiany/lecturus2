@@ -32,7 +32,7 @@ class VideoController < MainController
 	end
 
 	def _closeAndUpload(vidId,parts)
-		file = File.open(Rails.root.join('public','uploads/vits/video'+vidId.to_s+'.mp4'), 'wb')
+		file = File.open(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/video'+vidId.to_s+'.mp4'), 'wb')
 
 		for i in 0..(parts.to_i-1)
    			temp = File.open(Rails.root.join('public','uploads/vits/'+vidId.to_s+'/parts/'+vidId.to_s+"_"+i.to_s), 'r')	
@@ -92,7 +92,7 @@ class VideoController < MainController
 	def updateStartRecordTime(params)
 		if (params[:index]==0)
 			vid = Video.find(params[:id])
-			vid.start_record_timestamp = Time.now.getutc.to_s
+			vid.start_record_timestamp = Time.now.getutc
 			vid.save
 		end
 	end
