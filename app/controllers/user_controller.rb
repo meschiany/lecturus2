@@ -57,9 +57,9 @@ require 'digest/sha1'
     	if json.nil?
     		users = User.where("email='#{params['email']}' AND password='#{params['password']}'")
     		if users.size>0
+    			params["token"] = users[0].token;
     			tokenRes = _isTokenValid(params)
-
-    			if tokenRes["bool"]
+    			if !tokenRes["bool"]
     				token = Digest::SHA1.hexdigest("#{params['email']}-#{Time.now.to_i}-#{rand}")
     				users[0].update_attributes(:token => token, :last_login_timestamp => Time.now)
     			else
