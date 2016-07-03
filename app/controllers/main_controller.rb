@@ -103,7 +103,8 @@ class MainController < ApplicationController
   end
 
   def _getData(className, params, orderParam=nil)
-    if params.length <= 2 || (params.length == 3 && !params[:debug].nil? )
+    tmpParams = params.except(:action, :controller)
+    if tmpParams.length <= 0 || (tmpParams.length == 1 && (!tmpParams[:debug].nil? || !tmpParams[:token].nil?))
       posts = "#{className}".constantize.all
       json = _getJson("success", posts, "get all")
       return json
