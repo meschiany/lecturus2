@@ -17,6 +17,23 @@ class VideoController < MainController
 	    render result
 	end
 
+	def get_live_videos
+	    tokenValid = _isTokenValid(params)
+	    if params[:debug] == "true"
+	    	json = _getData("#{params['controller']}".camelize, params)
+	      	result = {:json => json, :status => :ok}      
+	    elsif _isTokenValid(params)
+	      user = _getUserByToken(params);
+	      params.store('filters', {:status => "RECORDING"});
+	      json = _getData("#{params['controller']}".camelize, params, "status")
+	      result ={:json=>json,:status => :ok}
+	    else
+	      json = _getJson("failed", {}, tokenValid['msg'])
+	      result = {:json => json, :status => :not_found}
+	    end
+	    render result
+	end
+
 	def setDirs(vidId)
 
 		FileUtils.mkdir_p(Rails.root.join('public','uploads/vits/'))

@@ -29,6 +29,7 @@ Myapp::Application.routes.draw do
       get 'get'
       post 'rewrite'
       get 'publish'
+      get 'get_live_videos'
     end
   end
 
