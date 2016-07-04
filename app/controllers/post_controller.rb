@@ -41,8 +41,8 @@ class PostController < ContentController
 			params.store("content_type", "file")
 			params.store("second", second)
 
-			localParams = ["content", "video_id"]
-      		result = setNew("#{params['controller']}".camelize, params, localParams)
+			localParams = ["video_id", "second", "content"]
+      		result = setNew("Post", params, localParams)
       		content = params[:file].read
       		id = params[:video_id].to_s
       		File.open(Rails.root.join('public','uploads/vits/'+id+'/files/'+file_name), 'wb') do |f| 
