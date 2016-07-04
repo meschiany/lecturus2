@@ -165,7 +165,7 @@ class VideoController < MainController
 			vid.save
 			result = {"video_id" => vid.id, 
 				"status" => vid.status, 
-				"videoUrl" => "http://54.149.212.63/vit/WebClientLecturus/app/pages/vitPlayer.html?videoId="+vid.id.to_s
+				"videoUrl" => "#/vitPlayer/"+vid.id.to_s
 			}
 			json = _getJson("success", result, "published")
 			result = {:json => json, :status => :ok}
