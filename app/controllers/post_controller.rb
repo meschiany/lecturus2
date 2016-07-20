@@ -110,10 +110,7 @@ class PostController < ContentController
 
 	def update_content
 		txt = Post.find(params[:id])
-		puts txt
-		params.each{|key, value| puts "#{key} is #{value}" 
-			txt[key] = value
-			}
+		params.each{ |key, value| txt[key] = value }
 		txt.save
 		return {"text_id" => txt.id,
 				"second" => txt.second,

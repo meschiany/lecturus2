@@ -1,12 +1,3 @@
-# change private to private section 
-# no need to pass params
-# no need for  duplicate call is_token_valid
-# before_filter :authenticate_user! run before any api request 
-# no need for () on func call
-# no camel case
-# no _ before privat
-# one line if -> return json if !json.nil?
-
 class MainController < ApplicationController
   require 'json'
 
@@ -163,8 +154,6 @@ class MainController < ApplicationController
     else
       result = {:json => json, :status => :not_found}
     end
-
-    puts result
     return result
   end
 
