@@ -38,16 +38,14 @@ $(document).ready(function(){
 	    var file = files[0];
 
 	    var formData = new FormData();
-		formData.append('video', file);
-		formData.append('id',vid.data.id);
-		formData.append('index',ind);
-		formData.append('active',true);
+		formData.append('file', file);
+		formData.append('video_id',3);
 		formData.append('description',"Description");
-		formData.append('file_type','mp4');
+		formData.append('second',3);
 
 		$.ajax({
 			type: "POST",
-		    url: "/video/upload?debug=true",
+		    url: "/post/new_file?debug=true",
 		    data: formData,
 		    contentType: false,
 		    processData: false

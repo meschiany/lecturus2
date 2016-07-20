@@ -72,7 +72,7 @@ Myapp::Application.routes.draw do
       get 'show'
       get 'new'
       get 'get'
-      get 'getAllWithVideos'
+      get 'get_all_with_videos'
     end
   end
 

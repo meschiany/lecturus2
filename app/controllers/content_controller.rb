@@ -1,72 +1,63 @@
 class ContentController < MainController
 
-	def deactivate()
-		tokenValid = _isTokenValid(params)
-		if tokenValid['bool']
-			json = validateParams(params, ["id"])
-			if json.nil?
-				content = "#{params['controller']}".camelize.constantize.find(params[:id])
-				content.active = false
-				content.save
-				json = _getJson("success", params, "updated")
-				result = {:json => json, :status => :ok}
-			else
-				result = {:json => json, :status => :not_found}
-			end
+	before_filter :authenticate_user
+	
+	def deactivate
+		json = validate_params(["id"])
+		if json.nil?
+			content = "#{params['controller']}".camelize.constantize.find(params[:id])
+			content.active = false
+			content.save
+			json = get_json "success", params, "updated"
+			result = {:json => json, :status => :ok}
 		else
-			json = _getJson("failed", {}, tokenValid['msg'])
-      		result = {:json => json, :status => :not_found}
+			result = {:json => json, :status => :not_found}
 		end
       	render result
 	end
 
-	def new_content(params, localParams)
-		tokenValid = _isTokenValid(params)
-		if tokenValid['bool']			
-			json = setNew("#{params['controller']}".camelize, params, localParams)
-			result = {:json => json, :status => :ok}
-		else
-			json = _getJson("failed", {}, tokenValid['msg'])
-      		result = {:json => json, :status => :not_found}
-		end
-      	return result
-	end
-
 	def get_content
-		# result = {:json => {}, :status => :not_found}
-		# render result
-		tokenValid = _isTokenValid(params)
-		if tokenValid['bool']
-			json = validateParams(params, ["filters"])
-			if json.nil?
-				content = []
-				a = params["filters"]
-				a.store("active","t")
-				params.store("filters",a)
+		json = validate_params(["filters"])
+		if json.nil?
+			content = []
+			a = params["filters"]
+			a.store("active","t")
+			params.store("filters",a)
 
 
-				texts = _getData("Text", params)
-				# texts["data"].each {|item| item[:c_type] = "text"}
-				
-				posts = _getData("Post", params)
-				# posts["data"].each {|item| item[:c_type] = "post"}
-				
-				content.push(*texts["data"])
-				content.push(*posts["data"])
-				content.each{|c|
-					if c.content_type == "file"
-						c.content = 'http://52.23.174.169:3000/uploads/vits/'+c.video_id.to_s+'/files/'+c.content
-					end
-				}
-				json = _getJson("success", content, "updated")
-				result = {:json => json, :status => :ok}
-			end
-		else
-			json = _getJson("failed", {}, tokenValid['msg'])
-      		result = {:json => json, :status => :not_found}
+			texts = get_data "Text"
+			# texts["data"].each {|item| item[:c_type] = "text"}
+			
+			posts = get_data "Post"
+			# posts["data"].each {|item| item[:c_type] = "post"}
+			
+			content.push(*texts["data"])
+			content.push(*posts["data"])
+			content.each{|c|
+				if c.content_type == "file"
+					c.content = 'http://52.23.174.169:3000/uploads/vits/'+c.video_id.to_s+'/files/'+c.content
+				end
+			}
+			json = get_json "success", content, "updated"
+			result = {:json => json, :status => :ok}
 		end
+
 		render result
 	end
 
+
+	private
+
+	# def new_content(params, localParams)
+	# 	tokenValid = is_token_valid
+	# 	if tokenValid['bool']			
+	# 		json = set_new("#{params['controller']}".camelize, localParams)
+	# 		result = {:json => json, :status => :ok}
+	# 	else
+	# 		json = get_json("failed", {}, tokenValid['msg'])
+ #      		result = {:json => json, :status => :not_found}
+	# 	end
+ #      	return result
+	# end
 
 end
